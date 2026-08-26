@@ -40,6 +40,9 @@ body{
   text-align:right;font-size:12px;font-weight:600;
   letter-spacing:.16em;text-transform:uppercase;line-height:1.7;
 }
+.mast-nav{margin-top:8px;display:flex;flex-direction:column;gap:2px;}
+.mast-nav a{color:var(--blue);text-decoration:none;}
+.mast-nav a:hover{color:var(--red);text-decoration:underline;}
 
 /* ---- control band ---- */
 .band{display:grid;grid-template-columns:1fr;gap:0;border-bottom:4px solid var(--ink);}

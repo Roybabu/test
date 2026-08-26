@@ -57,6 +57,16 @@ body{
   color:var(--ink-soft);
   margin:4px 0 0;
 }
+.head-nav{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:var(--ink-faint);
+  margin:6px 0 0;
+}
+.head-nav a{color:var(--ink-soft);text-decoration:none;}
+.head-nav a:hover{color:var(--ink);text-decoration:underline;}
 .formno{
   margin-left:auto;
   font-family:'IBM Plex Mono',monospace;

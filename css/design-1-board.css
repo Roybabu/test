@@ -51,6 +51,17 @@ body{
   color:#9BA09A;
   margin-left:auto;
 }
+.masthead-nav{display:flex;gap:14px;}
+.masthead-nav .mh-link{
+  font-family:'Roboto Mono',monospace;
+  font-size:11px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:#CFE9D8;
+  text-decoration:none;
+  white-space:nowrap;
+}
+.masthead-nav .mh-link:hover{color:#fff;text-decoration:underline;}
 
 /* ---------- plate strip ---------- */
 .strip-label{

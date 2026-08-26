@@ -25,10 +25,17 @@ body{
 
 /* ---- title page ---- */
 .title{padding:58px 0 30px;border-bottom:1px solid var(--ink);}
+.title-top{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:12px 24px;margin:0 0 16px;}
 .eyebrow{
   font-size:11.5px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;
-  color:var(--mark);margin:0 0 16px;
+  color:var(--mark);margin:0;
 }
+.title-nav{
+  margin:0;display:flex;gap:18px;
+  font-size:11.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+}
+.title-nav a{color:var(--ink-3);text-decoration:none;}
+.title-nav a:hover{color:var(--mark);}
 .title h1{
   font-family:'Fraunces',Georgia,serif;
   font-weight:600;font-size:clamp(38px,7vw,62px);
