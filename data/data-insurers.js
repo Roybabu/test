@@ -30,6 +30,13 @@
 
    An insurer with no image file shows a lettered badge instead, so you can
    add logos gradually and nothing ever looks broken.
+
+   claimwireId: optional. Set this only on an insurer Claim.Wire has a
+   claims playbook for (see data/data-claimwire-playbooks.js) — it's the
+   key that playbook is filed under. This is the one field Claim.Wire
+   reads from this list (via its own COMPANIES derivation), so once set,
+   treat it as a stable id: renaming it here breaks the matching
+   SEED_PLAYBOOKS entry and anyone's locally-saved edits to that insurer.
    ============================================================================ */
 
 const insurerData = [
@@ -38,7 +45,8 @@ const insurerData = [
     name:  "ADNIC (Abu Dhabi National Insurance Company)",
     type:  "Conventional",
     phone: "",
-    notes: "One of the largest UAE insurers by premium."
+    notes: "One of the largest UAE insurers by premium.",
+    claimwireId: "adnic"
   },
   {
     name:  "Abu Dhabi National Takaful Company",
@@ -74,7 +82,8 @@ const insurerData = [
     name:  "Al Fujairah National Insurance Company (AFNIC)",
     type:  "Conventional",
     phone: "",
-    notes: "Active in Abu Dhabi, Dubai, Fujairah, Dibba and Sharjah."
+    notes: "Active in Abu Dhabi, Dubai, Fujairah, Dibba and Sharjah.",
+    claimwireId: "afnic"
   },
   {
     name:  "Al Ittihad Al Watani Insurance Company",
@@ -92,7 +101,8 @@ const insurerData = [
     name:  "Al Sagr National Insurance Company",
     type:  "Conventional",
     phone: "",
-    notes: "Founded 1979."
+    notes: "Founded 1979.",
+    claimwireId: "al-sagar-insurance"
   },
   {
     name:  "Al Wathba National Insurance Company (AWNIC)",
@@ -128,7 +138,8 @@ const insurerData = [
     name:  "Dubai Insurance Company (DIC)",
     type:  "Conventional",
     phone: "",
-    notes: "50+ years in the market. Not to be confused with Dubai National Insurance & Reinsurance Company (DNIRC) — separate entity."
+    notes: "50+ years in the market. Not to be confused with Dubai National Insurance & Reinsurance Company (DNIRC) — separate entity.",
+    claimwireId: "dubai-insurance-company"
   },
   {
     name:  "Dubai Islamic Insurance & Reinsurance Co. (AMAN)",
@@ -140,7 +151,8 @@ const insurerData = [
     name:  "Dubai National Insurance & Reinsurance Company (DNIRC)",
     type:  "Conventional",
     phone: "",
-    notes: "Separate company from Dubai Insurance Company (DIC) — do not conflate the two."
+    notes: "Separate company from Dubai Insurance Company (DIC) — do not conflate the two.",
+    claimwireId: "dni"
   },
   {
     name:  "Emirates Insurance Company (EIC)",
@@ -152,7 +164,8 @@ const insurerData = [
     name:  "GIG Gulf (formerly AXA Gulf)",
     type:  "Conventional",
     phone: "",
-    notes: "Formed from AXA Gulf; separate from Sukoon (formerly Oman Insurance) — verify current corporate name on any policy before filing."
+    notes: "Formed from AXA Gulf; separate from Sukoon (formerly Oman Insurance) — verify current corporate name on any policy before filing.",
+    claimwireId: "gig-gulf-axa"
   },
   {
     name:  "Insurance House",
@@ -164,13 +177,22 @@ const insurerData = [
     name:  "Iran Insurance Company",
     type:  "Conventional",
     phone: "",
-    notes: "Foreign insurer with UAE branch."
+    notes: "Foreign insurer with UAE branch.",
+    claimwireId: "iran-insurance-company"
   },
   {
     name:  "LIVA Insurance",
     type:  "Conventional",
     phone: "",
-    notes: ""
+    notes: "",
+    claimwireId: "liva-insurance"
+  },
+  {
+    name:  "Methaq Takaful Insurance Company",
+    type:  "Takaful",
+    phone: "",
+    notes: "",
+    claimwireId: "methaq"
   },
   {
     name:  "National General Insurance Company (NGI)",
@@ -194,7 +216,7 @@ const insurerData = [
     name:  "Noor Takaful",
     type:  "Takaful",
     phone: "",
-    notes: ""
+    notes: "Claims for this brand are handled under Watania Takaful — see that entry for the Claim.Wire playbook."
   },
   {
     name:  "Orient Insurance PJSC",
@@ -212,13 +234,15 @@ const insurerData = [
     name:  "Oriental Insurance Company (UAE branch)",
     type:  "Conventional",
     phone: "",
-    notes: "Foreign (Indian) insurer operating via UAE branch."
+    notes: "Foreign (Indian) insurer operating via UAE branch.",
+    claimwireId: "oriental-insurance"
   },
   {
     name:  "Qatar Insurance Company (QIC)",
     type:  "Conventional",
     phone: "",
-    notes: "Regional insurer with UAE operations."
+    notes: "Regional insurer with UAE operations.",
+    claimwireId: "qatar-insurance-company"
   },
   {
     name:  "RAK Insurance (RAK National Insurance Company)",
@@ -230,7 +254,8 @@ const insurerData = [
     name:  "Salama (Islamic Arab Insurance Company)",
     type:  "Takaful",
     phone: "",
-    notes: "45+ years, Sharia-compliant."
+    notes: "45+ years, Sharia-compliant.",
+    claimwireId: "salama-insurance"
   },
   {
     name:  "Sharjah Insurance Company",
@@ -242,7 +267,8 @@ const insurerData = [
     name:  "Sukoon Insurance (formerly Oman Insurance Company)",
     type:  "Conventional",
     phone: "",
-    notes: "One of the oldest and largest UAE insurers; rebranded from Oman Insurance Company to Sukoon."
+    notes: "One of the oldest and largest UAE insurers; rebranded from Oman Insurance Company to Sukoon.",
+    claimwireId: "sukoon-insurance"
   },
   {
     name:  "Sukoon Takaful (formerly Arabian Scandinavian Insurance Co. / ASCANA)",
@@ -260,7 +286,8 @@ const insurerData = [
     name:  "Tokio Marine",
     type:  "Conventional",
     phone: "",
-    notes: "Japanese insurer operating in the UAE under Al-Futtaim Group sponsorship."
+    notes: "Japanese insurer operating in the UAE under Al-Futtaim Group sponsorship.",
+    claimwireId: "tokio-marine"
   },
   {
     name:  "Union Insurance Company",
@@ -272,7 +299,8 @@ const insurerData = [
     name:  "United Fidelity Insurance Company",
     type:  "Conventional",
     phone: "",
-    notes: ""
+    notes: "",
+    claimwireId: "fidelity-insurance"
   },
   {
     name:  "United Insurance Company",
@@ -284,7 +312,8 @@ const insurerData = [
     name:  "Watania Takaful (National Takaful Company)",
     type:  "Takaful",
     phone: "",
-    notes: "Founded 2008."
+    notes: "Founded 2008. Also referred to as Noor Takaful in some correspondence — see that entry.",
+    claimwireId: "noor-takaful-watania"
   },
   {
     name:  "Yas Takaful (formerly Hilal Takaful)",

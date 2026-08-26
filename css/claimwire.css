@@ -1,0 +1,442 @@
+  /* ---------- Same design language as Advisor Desk (the homepage this
+     tool is opened from): a cool paper ground, cyan as the one accent,
+     condensed display type for headings, plain sans for body copy, mono
+     for anything that reads as data. Lists read as hairline grids — a
+     1px gap between rows showing the ground color through, the way
+     Advisor Desk's index grid and stat board are built — rather than
+     individually bordered, shadowed cards. ---------- */
+  :root{
+    --bg:#E7ECEB;
+    --paper:#FFFFFF;
+    --surface:#F5F8F7;
+    --ink:#17222B;
+    --ink-2:#556067;
+    --ink-3:#7E8A8F;
+    --rule:#C6D0CE;
+    --rule-2:#D9E1DF;
+    --accent:#0E7C86;
+    --accent-ink:#0A5A61;
+    --accent-bg:#D3E9E7;
+    --green:#0E7C86;
+    --green-bg:#D3E9E7;
+    --red:#A83A2E;
+    --red-bg:#F0D9D3;
+    --amber:#B8710F;
+    --amber-bg:#F1DFC0;
+    --violet:#5B4B8A;
+    --violet-bg:#E3DEF1;
+    --radius:6px;
+    --radius-sm:5px;
+    --f-head:'Barlow Semi Condensed',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    --f-body:'Public Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    --f-mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+    /* spacing scale — everything on the page is set from these six steps */
+    --sp-1:4px;
+    --sp-2:8px;
+    --sp-3:12px;
+    --sp-4:16px;
+    --sp-5:24px;
+    --sp-6:32px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#121A1F;
+      --paper:#1E2930;
+      --surface:#182228;
+      --ink:#E6ECEA;
+      --ink-2:#9DACAF;
+      --ink-3:#748386;
+      --rule:#31403F;
+      --rule-2:#263230;
+      --accent:#3FB3AE;
+      --accent-ink:#8FD4CE;
+      --accent-bg:#1B3532;
+      --green:#3FB3AE;
+      --green-bg:#1B3532;
+      --amber:#DDA24F;
+      --amber-bg:#392B14;
+      --violet:#9C8CD6;
+      --violet-bg:#2A2440;
+      --red:#DB8071;
+      --red-bg:#3A231F;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#121A1F;
+    --paper:#1E2930;
+    --surface:#182228;
+    --ink:#E6ECEA;
+    --ink-2:#9DACAF;
+    --ink-3:#748386;
+    --rule:#31403F;
+    --rule-2:#263230;
+    --accent:#3FB3AE;
+    --accent-ink:#8FD4CE;
+    --accent-bg:#1B3532;
+    --green:#3FB3AE;
+    --green-bg:#1B3532;
+    --amber:#DDA24F;
+    --amber-bg:#392B14;
+    --violet:#9C8CD6;
+    --violet-bg:#2A2440;
+    --red:#DB8071;
+    --red-bg:#3A231F;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--f-body);
+    font-size:14.5px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  @media (prefers-reduced-motion:reduce){ *{ animation:none !important; transition:none !important; } }
+
+  .shell{max-width:1400px;margin:0 auto;padding:0 40px 64px;}
+  @media (max-width:1200px){ .shell{padding:0 24px 64px;} }
+  @media (max-width:640px){ .shell{padding:0 16px 56px;} }
+
+  .narrow{max-width:600px;margin:0 auto;}
+  .mid{max-width:760px;margin:0 auto;}
+
+  /* ---------- masthead — matches Advisor Desk's header.site/.nav/.brand ---------- */
+  .masthead{background:var(--bg);border-bottom:1px solid var(--rule);margin:0 0 0;padding:14px 24px;}
+  @media (max-width:640px){ .masthead{padding:14px 16px;} }
+  .masthead-in{max-width:1400px;margin:0 auto;display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+  .home-link{font-family:var(--f-mono);font-size:12px;font-weight:500;letter-spacing:.02em;
+    color:var(--ink-2);text-decoration:none;border-right:1px solid var(--rule);padding-right:14px;
+    margin-right:-2px;}
+  .home-link:hover{color:var(--accent-ink);}
+  @media (max-width:480px){ .home-link{border-right:0;padding-right:0;width:100%;order:-1;} }
+  .wordmark{font-family:var(--f-head);font-weight:800;font-size:21px;letter-spacing:-0.01em;
+    margin:0;line-height:1;color:var(--ink);}
+  .wordmark em{font-style:normal;color:var(--accent-ink);}
+  .masthead-note{font-family:var(--f-mono);font-size:11.5px;font-weight:500;letter-spacing:.04em;
+    text-transform:uppercase;color:var(--ink-3);margin-left:auto;}
+
+  /* ---------- step trail: styled as Advisor Desk's .chip filters ---------- */
+  .trail{display:flex;align-items:center;gap:7px;margin:var(--sp-5) 0 var(--sp-2);
+    flex-wrap:wrap;}
+  .trail .crumb{font-family:var(--f-mono);font-size:12px;padding:6px 12px;border-radius:20px;
+    color:var(--ink-2);background:var(--paper);border:1px solid var(--rule);transition:border-color .15s;}
+  .trail .crumb.active{background:var(--ink);color:var(--bg);border-color:var(--ink);}
+  .trail .crumb.done{color:var(--accent-ink);cursor:pointer;border-color:var(--accent-bg);background:var(--accent-bg);}
+  .trail .crumb.done:hover{border-color:var(--accent);}
+
+  /* Every step body is one vertical stack — direct children get one
+     consistent gap so there's never a guess about "how much space here". */
+  .step > .narrow > * + *,
+  .step > .mid > * + *,
+  .step > * + *{margin-top:var(--sp-5);}
+  .step > .narrow > .back-link,
+  .step > .mid > .back-link,
+  .step > .back-link{margin-top:0;}
+
+  /* Exception: a caption (.strip-label) sits close to the thing it labels,
+     not at the standard section gap — higher specificity than the rules
+     above so it always wins, regardless of source order. */
+  .step > .narrow > .strip-label + *,
+  .step > .mid > .strip-label + *,
+  .step > .strip-label + *,
+  .split-main > .strip-label + *,
+  .split-side > .strip-label + *,
+  .edit-panel > .strip-label + *{margin-top:var(--sp-2);}
+
+  /* The edit panel repeats the same "label, then its card" pattern as the
+     live page (see rules above), so its groups get the same two gaps. */
+  .edit-panel > * + *{margin-top:var(--sp-5);}
+
+  .strip-label{font-family:var(--f-mono);font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--ink-3);margin:0 0 var(--sp-2);}
+
+  p.lede{color:var(--ink-2);font-size:14px;max-width:62ch;margin:0;}
+
+  /* ---------- wide-screen two-column layouts ---------- */
+  .split{display:grid;grid-template-columns:1.5fr 1fr;gap:0 var(--sp-5);align-items:start;}
+  @media (max-width:900px){ .split{display:block;} }
+  .split-side{position:sticky;top:18px;}
+  @media (max-width:900px){ .split-side{position:static;margin-top:var(--sp-5);} }
+
+  /* Cards stacked inside a split column all get the same gap between them,
+     whether that's registerWaysSection/processBody/louSection on the left
+     or contactBar/surveyorSection/directorySection on the right. Margins
+     collapse with each section's own strip-label margin, so this is the
+     only place that gap is set. */
+  .split-main > * + *,
+  .split-side > * + *{margin-top:var(--sp-5);}
+
+  /* ---------- controls panel (a single card, rows divided by hairlines) ---------- */
+  .controls{background:var(--paper);border:1px solid var(--rule);border-radius:var(--radius);
+    overflow:hidden;}
+  .field{padding:12px 16px;border-bottom:1px solid var(--rule-2);}
+  .field:last-child{border-bottom:0;}
+  .field-label{font-family:var(--f-mono);font-size:11px;font-weight:500;letter-spacing:.03em;
+    text-transform:uppercase;color:var(--ink-2);display:block;margin-bottom:5px;}
+  .field-label .hint{font-family:var(--f-body);font-weight:400;text-transform:none;letter-spacing:0;color:var(--ink-3);font-size:11.5px;}
+  .field input,.field select,.field textarea{width:100%;border:0;background:transparent;
+    font-family:var(--f-body);font-size:14.5px;color:var(--ink);padding:0;}
+  .field input:focus,.field select:focus,.field textarea:focus{outline:none;}
+  .field:focus-within{background:var(--rule-2);}
+  .field select{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M6 9l6 6 6-6' stroke='%23556067' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:right center;padding-right:22px;cursor:pointer;}
+  .field textarea{resize:vertical;min-height:84px;line-height:1.6;font-size:14px;}
+
+  /* ---------- insurer picker: styled like Advisor Desk's header search
+     box — the one field on step 1 earns a more prominent, distinct
+     control instead of sitting inside a generic .controls card. Fully
+     custom (not a native <select>) so the open options list can carry
+     the same hairline-grid treatment as the rest of the page. ---------- */
+  .insurer-field{position:relative;}
+  .insurer-select{display:flex;align-items:center;gap:11px;background:var(--paper);
+    border:1px solid var(--rule);border-radius:var(--radius-sm);padding:13px 16px;
+    cursor:pointer;user-select:none;transition:border-color .15s ease;}
+  .insurer-select:hover{border-color:var(--ink-3);}
+  .insurer-select:focus{outline:none;border-color:var(--accent);}
+  .insurer-select.is-open{border-color:var(--accent);}
+  .insurer-select svg{flex:none;color:var(--ink-3);}
+  .insurer-select-value{flex:1;min-width:0;color:var(--ink-3);font-family:var(--f-body);
+    font-size:16px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .insurer-select-value.is-set{color:var(--ink);}
+  .insurer-select-caret{transition:transform .15s ease;}
+  .insurer-select.is-open .insurer-select-caret{transform:rotate(180deg);}
+
+  .insurer-options{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:30;
+    list-style:none;margin:0;padding:0;max-height:280px;overflow-y:auto;
+    display:flex;flex-direction:column;gap:1px;background:var(--rule);
+    border:1px solid var(--rule);border-radius:var(--radius-sm);overflow-x:hidden;
+    box-shadow:0 8px 20px rgba(23,34,43,.12);}
+  .insurer-options[hidden]{display:none;}
+  .insurer-option{background:var(--paper);padding:11px 16px;cursor:pointer;
+    font-family:var(--f-body);font-size:15px;font-weight:500;color:var(--ink);
+    display:flex;align-items:center;justify-content:space-between;gap:10px;}
+  .insurer-option:hover,.insurer-option.is-active{background:var(--surface);}
+  .insurer-option.is-selected{color:var(--accent-ink);font-weight:600;}
+  .insurer-option-check{flex:none;color:var(--accent);opacity:0;font-size:14px;}
+  .insurer-option.is-selected .insurer-option-check{opacity:1;}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;}
+  @media (max-width:560px){ .grid2{grid-template-columns:1fr;} }
+  .grid2 .field{border-right:1px solid var(--rule-2);}
+  .grid2 .field:nth-child(2n){border-right:0;}
+  @media (max-width:560px){ .grid2 .field{border-right:0;} }
+
+  /* ---------- buttons ---------- */
+  .btn-plate{appearance:none;cursor:pointer;background:var(--accent);color:#fff;border:1px solid var(--accent);
+    border-radius:var(--radius-sm);font-family:var(--f-head);font-weight:700;font-size:16px;letter-spacing:.02em;
+    text-transform:uppercase;padding:11px 20px;width:100%;transition:background .12s ease,opacity .12s ease;}
+  .btn-plate:hover{background:var(--accent-ink);border-color:var(--accent-ink);}
+  .btn-plate:disabled{opacity:.4;cursor:not-allowed;}
+  .btn-plate:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+
+  .act{appearance:none;cursor:pointer;background:var(--paper);border:1px solid var(--rule);
+    font-family:var(--f-head);font-size:14.5px;font-weight:700;letter-spacing:.01em;text-transform:uppercase;
+    border-radius:var(--radius-sm);
+    padding:8px 14px;color:var(--ink);text-decoration:none;display:inline-flex;align-items:center;gap:7px;}
+  .act:hover{background:var(--rule-2);}
+  .act:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+
+  .act.is-send{background:var(--accent);border-color:var(--accent);color:#fff;font-size:15px;padding:9px 18px;}
+  .act.is-send:hover{background:var(--accent-ink);border-color:var(--accent-ink);}
+  .act.is-send[aria-disabled="true"]{opacity:.45;pointer-events:none;background:var(--ink-3);border-color:var(--ink-3);}
+
+  .back-link{background:none;border:0;color:var(--ink-2);font-family:var(--f-mono);font-size:12px;font-weight:500;
+    letter-spacing:.03em;text-transform:uppercase;
+    cursor:pointer;display:inline-flex;align-items:center;gap:6px;
+    padding:0;margin:0;}
+  .back-link:hover{color:var(--ink);}
+
+  /* ---------- claim type index cards: a hairline grid, like Advisor
+     Desk's idx-grid/tools grid — a 1px gap in the rule color between
+     cells stands in for individual card borders. ---------- */
+  .type-list{display:grid;grid-template-columns:1fr;gap:1px;background:var(--rule);
+    border:1px solid var(--rule);border-radius:var(--radius);overflow:hidden;}
+  @media (min-width:640px){ .type-list{grid-template-columns:1fr 1fr;} }
+  .type-row{width:100%;text-align:left;background:var(--paper);
+    display:flex;align-items:stretch;cursor:pointer;font-family:inherit;
+    color:var(--ink);transition:background .12s ease;}
+  .type-row:hover{background:var(--surface);}
+  .type-row:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;}
+  .type-flag{width:5px;background:var(--green);flex:none;}
+  .type-row.tp .type-flag{background:var(--red);}
+  .type-main{padding:var(--sp-4);min-width:0;flex:1;}
+  .type-kind{font-family:var(--f-mono);font-size:10.5px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--green);display:block;margin-bottom:var(--sp-1);}
+  .type-row.tp .type-kind{color:var(--red);}
+  .type-name{font-family:var(--f-head);font-weight:700;font-size:19px;letter-spacing:-0.01em;margin:0 0 var(--sp-1);}
+  .type-desc{color:var(--ink-2);font-size:13px;margin:0;line-height:1.5;}
+  .type-arrow{align-self:center;padding:0 var(--sp-4);color:var(--ink-3);font-size:20px;flex:none;}
+
+  /* ---------- process feed: a card of dated/ordered entries ---------- */
+  .stage-list{display:flex;flex-direction:column;gap:1px;background:var(--rule);
+    border:1px solid var(--rule);border-radius:var(--radius);overflow:hidden;}
+  .stage-row{display:flex;align-items:stretch;background:var(--paper);}
+  .stage-flag{width:5px;background:var(--amber);flex:none;}
+  .stage-num{display:flex;align-items:flex-start;justify-content:center;width:44px;flex:none;padding-top:var(--sp-3);}
+  .stage-num::before{content:attr(data-n);display:flex;align-items:center;justify-content:center;
+    width:22px;height:22px;border-radius:50%;background:var(--ink);color:var(--paper);
+    font-family:var(--f-mono);font-weight:600;font-size:11px;}
+  .stage-main{padding:var(--sp-3) var(--sp-4) var(--sp-3) 0;min-width:0;flex:1;}
+  .stage-title{font-family:var(--f-head);font-weight:700;font-size:16px;letter-spacing:.01em;margin:0 0 var(--sp-1);}
+  .stage-desc{color:var(--ink-2);font-size:13px;margin:0;line-height:1.5;}
+  .stage-desc + .stage-desc{margin-top:var(--sp-2);}
+  .stage-sla{display:inline-flex;align-items:center;margin-top:var(--sp-2);font-family:var(--f-mono);
+    font-size:11px;font-weight:500;letter-spacing:.02em;
+    color:var(--amber);background:var(--amber-bg);border-radius:999px;
+    padding:2px 9px;}
+  .stage-extra-note{margin-top:var(--sp-2);background:var(--violet-bg);color:var(--ink);
+    border-radius:var(--radius-sm);padding:var(--sp-2) var(--sp-3);}
+  .stage-sublist{margin:var(--sp-3) 0 0;padding:0;list-style:none;}
+  .stage-sublist li{display:grid;grid-template-columns:1fr auto;gap:var(--sp-3);align-items:baseline;
+    padding:var(--sp-2) 0;border-top:1px solid var(--rule-2);}
+  .stage-sublist li:first-child{border-top:0;padding-top:0;}
+  .stage-sublist .sub-label{font-size:13px;color:var(--ink);}
+  .stage-sublist .sub-time{font-family:var(--f-mono);font-size:11.5px;font-weight:500;color:var(--amber);
+    white-space:nowrap;text-align:right;}
+
+  /* ---------- selected insurer chip + status pills ---------- */
+  .selected-plate{display:inline-flex;align-items:center;gap:var(--sp-2);background:var(--paper);
+    border:1px solid var(--rule);border-radius:999px;padding:6px 14px 6px 6px;}
+  .selected-plate .code{font-family:var(--f-mono);font-weight:600;font-size:11px;letter-spacing:.03em;
+    background:var(--ink);color:var(--paper);border-radius:999px;padding:5px 9px;}
+  .selected-plate .name{font-family:var(--f-head);font-size:15px;font-weight:700;}
+
+  .claim-tag{display:inline-flex;align-items:center;font-family:var(--f-mono);font-size:11px;font-weight:500;
+    letter-spacing:.03em;text-transform:uppercase;padding:4px 10px;border-radius:999px;background:var(--green-bg);
+    color:var(--green);margin-left:var(--sp-2);vertical-align:middle;}
+  .claim-tag.tp{background:var(--red-bg);color:var(--red);}
+
+  .email-note{font-size:12px;color:var(--ink-3);margin-top:var(--sp-2);}
+  .email-note.remembered{color:var(--green);}
+
+  /* ---------- claims-email chips: the insurer's on-file address can't
+     be removed, only edited via the process step — extra recipients
+     the user adds here are suggestions and can be removed freely. ---------- */
+  .email-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px;}
+  .email-chips:empty{display:none;}
+  .email-chip{display:inline-flex;align-items:center;gap:6px;background:var(--surface);
+    border:1px solid var(--rule);border-radius:20px;padding:5px 8px 5px 12px;
+    font-family:var(--f-mono);font-size:12.5px;color:var(--ink);max-width:100%;}
+  .email-chip .addr{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .email-chip.locked{padding-right:12px;}
+  .email-chip .lock-ic{flex:none;color:var(--ink-3);}
+  .email-chip .rm{flex:none;appearance:none;border:0;background:var(--rule-2);color:var(--ink-2);
+    width:16px;height:16px;border-radius:50%;font-size:11px;line-height:1;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;padding:0;}
+  .email-chip .rm:hover{background:var(--red-bg);color:var(--red);}
+
+  /* Neutral informational callout — portal reminder, LOU note. Uses the
+     "reference" violet from Advisor Desk's docs tag, distinct from the
+     interactive cyan accent and from .ivr-note (amber, an actionable
+     call-center number). */
+  .note-block{font-size:13px;line-height:1.6;color:var(--ink-2);background:var(--violet-bg);
+    border-radius:var(--radius-sm);padding:var(--sp-3) var(--sp-4);}
+
+  /* ---------- process contact bar (single card in the sidebar) ---------- */
+  .contact-bar{display:flex;flex-direction:column;gap:1px;background:var(--rule);
+    border:1px solid var(--rule);border-radius:var(--radius);overflow:hidden;}
+  .contact-cell{padding:var(--sp-3) var(--sp-4);background:var(--paper);}
+  .contact-cell .row{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-2);}
+  /* ---------- click-to-copy: every email/phone value in the page is
+     tap/click-able and copies itself, instead of sitting next to a
+     separate Copy button. ---------- */
+  .copyable{cursor:pointer;border-bottom:1px dashed var(--rule-2);transition:color .12s ease,border-color .12s ease;}
+  .copyable:hover{color:var(--accent-ink);border-bottom-color:var(--accent);}
+  .copyable:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:2px;}
+  .copyable.copied{color:var(--green);border-bottom-color:var(--green);}
+  .copy-flag{display:none;margin-left:6px;font-family:var(--f-mono);font-size:10px;font-weight:700;
+    color:var(--green);text-transform:uppercase;letter-spacing:.03em;}
+  .copyable.copied .copy-flag{display:inline;}
+  .contact-cell .field-label{margin-bottom:var(--sp-1);}
+  .contact-cell .val{font-family:var(--f-mono);font-size:12.5px;word-break:break-word;}
+  .contact-cell .val.empty{font-family:var(--f-body);color:var(--ink-3);font-style:italic;}
+
+  /* ---------- ways to register: hairline-grid card ---------- */
+  .way-list{display:flex;flex-direction:column;gap:1px;background:var(--rule);
+    border:1px solid var(--rule);border-radius:var(--radius);overflow:hidden;}
+  .way-row{display:flex;align-items:stretch;background:var(--paper);}
+  .way-flag{width:5px;background:var(--green);flex:none;}
+  .way-row.is-email .way-flag{background:var(--accent);}
+  .way-main{padding:var(--sp-3) var(--sp-4);min-width:0;flex:1;}
+  .way-title{font-family:var(--f-head);font-weight:700;font-size:16px;margin:0 0 var(--sp-1);}
+  .way-desc{color:var(--ink-2);font-size:13px;margin:0;line-height:1.5;}
+  .way-cta{align-self:center;padding:0 var(--sp-4);flex:none;}
+  @media (max-width:480px){ .way-row{flex-wrap:wrap;} .way-cta{padding:0 0 var(--sp-3) var(--sp-4);} }
+
+  /* ---------- surveyor / directory contact rows: styled as data tables,
+     hairline-grid, zebra-striped like a call sheet ---------- */
+  .contact-list{display:flex;flex-direction:column;gap:1px;background:var(--rule);
+    border:1px solid var(--rule);border-radius:var(--radius);overflow:hidden;}
+  .contact-row{display:grid;grid-template-columns:1fr auto;gap:var(--sp-3);align-items:center;padding:var(--sp-3) var(--sp-4);
+    background:var(--paper);}
+  .contact-row:nth-child(even){background:var(--surface);}
+  .contact-row .who{font-size:13px;}
+  .contact-row .who small{display:block;color:var(--ink-3);font-size:11.5px;margin-top:1px;}
+  .contact-row .num{font-family:var(--f-mono);font-size:12px;font-weight:500;white-space:nowrap;color:var(--ink-2);}
+  /* One row = label+phone on top, the email/contact string given the
+     full card width below it — an email column squeezed between two
+     others just forces awkward mid-word breaks. */
+  .dir-row{padding:var(--sp-3) var(--sp-4);background:var(--paper);}
+  .dir-row:nth-child(even){background:var(--surface);}
+  .dir-top{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--sp-3);}
+  .dir-row .label{font-family:var(--f-head);font-weight:700;font-size:13.5px;letter-spacing:.01em;}
+  .dir-row .phone{line-height:1.5;text-align:right;font-family:var(--f-mono);font-size:12px;font-weight:500;
+    white-space:nowrap;color:var(--ink-2);flex:none;}
+  .dir-row .contact{display:block;margin-top:3px;font-family:var(--f-mono);font-size:12px;color:var(--ink-2);
+    overflow-wrap:break-word;word-break:normal;}
+  .ivr-note{font-size:12.5px;color:var(--amber);background:var(--amber-bg);
+    border-radius:var(--radius-sm);padding:var(--sp-3) var(--sp-4);margin-bottom:var(--sp-3);}
+
+  .empty-state{background:var(--paper);border:1px solid var(--rule);border-radius:var(--radius);
+    padding:var(--sp-5) 18px;text-align:center;}
+  .empty-state strong{display:block;font-family:var(--f-head);font-weight:700;font-size:17px;margin-bottom:var(--sp-1);}
+  .empty-state p{color:var(--ink-2);font-size:13px;margin:0 0 var(--sp-3);}
+  .empty-state p:last-child{margin-bottom:0;}
+  .empty-state.is-note{text-align:left;padding:var(--sp-4);margin-top:var(--sp-4);}
+
+  .edit-toggle{background:none;border:0;color:var(--ink-2);font-family:var(--f-mono);font-size:11.5px;
+    font-weight:500;letter-spacing:.02em;
+    text-decoration:underline;cursor:pointer;padding:0;margin:0;}
+  .edit-toggle:hover{color:var(--accent-ink);}
+
+  .edit-panel[hidden]{display:none;}
+  .edit-note{font-size:12.5px;color:var(--ink-3);font-style:italic;margin:0;}
+
+  /* ---------- preview ---------- */
+  .preview{background:var(--paper);border:1px solid var(--rule);border-radius:var(--radius);overflow:hidden;}
+  .preview-row{display:grid;grid-template-columns:64px 1fr;gap:var(--sp-3);padding:var(--sp-3) var(--sp-4);border-bottom:1px solid var(--rule-2);}
+  .preview-row:last-of-type{border-bottom:0;}
+  .preview-row .k{font-family:var(--f-mono);font-size:10.5px;font-weight:500;text-transform:uppercase;letter-spacing:.05em;
+    color:var(--ink-3);padding-top:2px;}
+  .preview-row .v{font-size:13.5px;word-break:break-word;}
+  .preview-row .v.subject{font-weight:700;}
+  .preview-body{white-space:pre-wrap;font-size:13px;color:var(--ink-2);padding:var(--sp-4);border-top:1px solid var(--rule-2);
+    max-height:160px;overflow-y:auto;background:var(--rule-2);}
+
+  /* Everything below here sits in step4's split-side, so vertical gaps
+     come from ".split-side > * + *" above — none of these set their own
+     margin-top, to keep that single rule the source of truth. */
+  .missing-note{font-size:12px;font-weight:600;color:var(--red);display:none;}
+  .missing-note.show{display:block;}
+
+  .action-row{display:flex;align-items:center;gap:var(--sp-3);flex-wrap:wrap;}
+  .status{font-size:12px;font-weight:600;color:var(--green);opacity:0;transition:opacity .2s ease;}
+  .status.show{opacity:1;}
+
+  .recap{border:1px solid var(--rule);background:var(--paper);border-radius:var(--radius);
+    padding:var(--sp-4);}
+  .recap-label{font-family:var(--f-mono);font-size:11px;font-weight:500;letter-spacing:.05em;text-transform:uppercase;
+    color:var(--amber);margin:0 0 var(--sp-3);}
+  .recap ol{margin:0;padding-left:18px;font-size:13px;color:var(--ink-2);line-height:1.8;}
+  .recap ol strong{color:var(--ink);}
+
+  footer{margin-top:var(--sp-6);padding-top:var(--sp-4);border-top:1px solid var(--rule);
+    font-family:var(--f-mono);font-size:11px;color:var(--ink-3);display:flex;justify-content:space-between;
+    gap:var(--sp-3);flex-wrap:wrap;}
+  footer button{background:none;border:0;color:var(--ink-3);text-decoration:underline;cursor:pointer;
+    font-family:inherit;font-size:inherit;padding:0;}
+  footer button:hover{color:var(--ink);}
+
+  .step{display:none;}
+  .step.active{display:block;}

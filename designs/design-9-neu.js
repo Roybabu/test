@@ -33,8 +33,8 @@ const design = {
       <p>Agency &amp; non-agency workshops across the UAE</p>
     </div>
     <nav class="top-nav">
-      <a class="top-link" href="https://claude.ai/code/artifact/73fdd97e-17ea-4a8c-8adc-94031565262f">← Advisor Desk</a>
-      <a class="top-link" href="https://claude.ai/code/artifact/494a0234-80bc-4007-8e4a-b918dcc30b78">Insurer claim steps →</a>
+      <a class="top-link" href="index.html">← Advisor Desk</a>
+      <a class="top-link" href="claimwire.html">Insurer claim steps →</a>
     </nav>
   </header>
 
