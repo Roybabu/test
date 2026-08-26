@@ -1,0 +1,1756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="description" content="Claim.Wire — per-insurer claim registration steps, contacts, and a Gmail-linked claim email.">
+<link rel="icon" href="logo.svg?v=1">
+<title>Claim Wire</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700;800&family=Public+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  /* ---------- Same design language as Advisor Desk (the homepage this
+     tool is opened from): a cool paper ground, cyan as the one accent,
+     condensed display type for headings, plain sans for body copy, mono
+     for anything that reads as data. Lists read as hairline grids — a
+     1px gap between rows showing the ground color through, the way
+     Advisor Desk's index grid and stat board are built — rather than
+     individually bordered, shadowed cards. ---------- */
+  :root{
+    --bg:#E7ECEB;
+    --paper:#FFFFFF;
+    --surface:#F5F8F7;
+    --ink:#17222B;
+    --ink-2:#556067;
+    --ink-3:#7E8A8F;
+    --rule:#C6D0CE;
+    --rule-2:#D9E1DF;
+    --accent:#0E7C86;
+    --accent-ink:#0A5A61;
+    --accent-bg:#D3E9E7;
+    --green:#0E7C86;
+    --green-bg:#D3E9E7;
+    --red:#A83A2E;
+    --red-bg:#F0D9D3;
+    --amber:#B8710F;
+    --amber-bg:#F1DFC0;
+    --violet:#5B4B8A;
+    --violet-bg:#E3DEF1;
+    --radius:6px;
+    --radius-sm:5px;
+    --f-head:'Barlow Semi Condensed',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    --f-body:'Public Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    --f-mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+    /* spacing scale — everything on the page is set from these six steps */
+    --sp-1:4px;
+    --sp-2:8px;
+    --sp-3:12px;
+    --sp-4:16px;
+    --sp-5:24px;
+    --sp-6:32px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#121A1F;
+      --paper:#1E2930;
+      --surface:#182228;
+      --ink:#E6ECEA;
+      --ink-2:#9DACAF;
+      --ink-3:#748386;
+      --rule:#31403F;
+      --rule-2:#263230;
+      --accent:#3FB3AE;
+      --accent-ink:#8FD4CE;
+      --accent-bg:#1B3532;
+      --green:#3FB3AE;
+      --green-bg:#1B3532;
+      --amber:#DDA24F;
+      --amber-bg:#392B14;
+      --violet:#9C8CD6;
+      --violet-bg:#2A2440;
+      --red:#DB8071;
+      --red-bg:#3A231F;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#121A1F;
+    --paper:#1E2930;
+    --surface:#182228;
+    --ink:#E6ECEA;
+    --ink-2:#9DACAF;
+    --ink-3:#748386;
+    --rule:#31403F;
+    --rule-2:#263230;
+    --accent:#3FB3AE;
+    --accent-ink:#8FD4CE;
+    --accent-bg:#1B3532;
+    --green:#3FB3AE;
+    --green-bg:#1B3532;
+    --amber:#DDA24F;
+    --amber-bg:#392B14;
+    --violet:#9C8CD6;
+    --violet-bg:#2A2440;
+    --red:#DB8071;
+    --red-bg:#3A231F;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--f-body);
+    font-size:14.5px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  @media (prefers-reduced-motion:reduce){ *{ animation:none !important; transition:none !important; } }
+
+  .shell{max-width:1400px;margin:0 auto;padding:0 40px 64px;}
+  @media (max-width:1200px){ .shell{padding:0 24px 64px;} }
+  @media (max-width:640px){ .shell{padding:0 16px 56px;} }
+
+  .narrow{max-width:600px;margin:0 auto;}
+  .mid{max-width:760px;margin:0 auto;}
+
+  /* ---------- masthead — matches Advisor Desk's header.site/.nav/.brand ---------- */
+  .masthead{background:var(--bg);border-bottom:1px solid var(--rule);margin:0 0 0;padding:14px 24px;}
+  @media (max-width:640px){ .masthead{padding:14px 16px;} }
+  .masthead-in{max-width:1400px;margin:0 auto;display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+  .home-link{font-family:var(--f-mono);font-size:12px;font-weight:500;letter-spacing:.02em;
+    color:var(--ink-2);text-decoration:none;border-right:1px solid var(--rule);padding-right:14px;
+    margin-right:-2px;}
+  .home-link:hover{color:var(--accent-ink);}
+  @media (max-width:480px){ .home-link{border-right:0;padding-right:0;width:100%;order:-1;} }
+  .wordmark{font-family:var(--f-head);font-weight:800;font-size:21px;letter-spacing:-0.01em;
+    margin:0;line-height:1;color:var(--ink);}
+  .wordmark em{font-style:normal;color:var(--accent-ink);}
+  .masthead-note{font-family:var(--f-mono);font-size:11.5px;font-weight:500;letter-spacing:.04em;
+    text-transform:uppercase;color:var(--ink-3);margin-left:auto;}
+
+  /* ---------- step trail: styled as Advisor Desk's .chip filters ---------- */
+  .trail{display:flex;align-items:center;gap:7px;margin:var(--sp-5) 0 var(--sp-2);
+    flex-wrap:wrap;}
+  .trail .crumb{font-family:var(--f-mono);font-size:12px;padding:6px 12px;border-radius:20px;
+    color:var(--ink-2);background:var(--paper);border:1px solid var(--rule);transition:border-color .15s;}
+  .trail .crumb.active{background:var(--ink);color:var(--bg);border-color:var(--ink);}
+  .trail .crumb.done{color:var(--accent-ink);cursor:pointer;border-color:var(--accent-bg);background:var(--accent-bg);}
+  .trail .crumb.done:hover{border-color:var(--accent);}
+
+  /* Every step body is one vertical stack — direct children get one
+     consistent gap so there's never a guess about "how much space here". */
+  .step > .narrow > * + *,
+  .step > .mid > * + *,
+  .step > * + *{margin-top:var(--sp-5);}
+  .step > .narrow > .back-link,
+  .step > .mid > .back-link,
+  .step > .back-link{margin-top:0;}
+
+  /* Exception: a caption (.strip-label) sits close to the thing it labels,
+     not at the standard section gap — higher specificity than the rules
+     above so it always wins, regardless of source order. */
+  .step > .narrow > .strip-label + *,
+  .step > .mid > .strip-label + *,
+  .step > .strip-label + *,
+  .split-main > .strip-label + *,
+  .split-side > .strip-label + *,
+  .edit-panel > .strip-label + *{margin-top:var(--sp-2);}
+
+  /* The edit panel repeats the same "label, then its card" pattern as the
+     live page (see rules above), so its groups get the same two gaps. */
+  .edit-panel > * + *{margin-top:var(--sp-5);}
+
+  .strip-label{font-family:var(--f-mono);font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--ink-3);margin:0 0 var(--sp-2);}
+
+  p.lede{color:var(--ink-2);font-size:14px;max-width:62ch;margin:0;}
+
+  /* ---------- wide-screen two-column layouts ---------- */
+  .split{display:grid;grid-template-columns:1.5fr 1fr;gap:0 var(--sp-5);align-items:start;}
+  @media (max-width:900px){ .split{display:block;} }
+  .split-side{position:sticky;top:18px;}
+  @media (max-width:900px){ .split-side{position:static;margin-top:var(--sp-5);} }
+
+  /* Cards stacked inside a split column all get the same gap between them,
+     whether that's registerWaysSection/processBody/louSection on the left
+     or contactBar/surveyorSection/directorySection on the right. Margins
+     collapse with each section's own strip-label margin, so this is the
+     only place that gap is set. */
+  .split-main > * + *,
+  .split-side > * + *{margin-top:var(--sp-5);}
+
+  /* ---------- controls panel (a single card, rows divided by hairlines) ---------- */
+  .controls{background:var(--paper);border:1px solid var(--rule);border-radius:var(--radius);
+    overflow:hidden;}
+  .field{padding:12px 16px;border-bottom:1px solid var(--rule-2);}
+  .field:last-child{border-bottom:0;}
+  .field-label{font-family:var(--f-mono);font-size:11px;font-weight:500;letter-spacing:.03em;
+    text-transform:uppercase;color:var(--ink-2);display:block;margin-bottom:5px;}
+  .field-label .hint{font-family:var(--f-body);font-weight:400;text-transform:none;letter-spacing:0;color:var(--ink-3);font-size:11.5px;}
+  .field input,.field select,.field textarea{width:100%;border:0;background:transparent;
+    font-family:var(--f-body);font-size:14.5px;color:var(--ink);padding:0;}
+  .field input:focus,.field select:focus,.field textarea:focus{outline:none;}
+  .field:focus-within{background:var(--rule-2);}
+  .field select{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M6 9l6 6 6-6' stroke='%23556067' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:right center;padding-right:22px;cursor:pointer;}
+  .field textarea{resize:vertical;min-height:84px;line-height:1.6;font-size:14px;}
+
+  /* ---------- insurer picker: styled like Advisor Desk's header search
+     box — the one field on step 1 earns a more prominent, distinct
+     control instead of sitting inside a generic .controls card. Fully
+     custom (not a native <select>) so the open options list can carry
+     the same hairline-grid treatment as the rest of the page. ---------- */
+  .insurer-field{position:relative;}
+  .insurer-select{display:flex;align-items:center;gap:11px;background:var(--paper);
+    border:1px solid var(--rule);border-radius:var(--radius-sm);padding:13px 16px;
+    cursor:pointer;user-select:none;transition:border-color .15s ease;}
+  .insurer-select:hover{border-color:var(--ink-3);}
+  .insurer-select:focus{outline:none;border-color:var(--accent);}
+  .insurer-select.is-open{border-color:var(--accent);}
+  .insurer-select svg{flex:none;color:var(--ink-3);}
+  .insurer-select-value{flex:1;min-width:0;color:var(--ink-3);font-family:var(--f-body);
+    font-size:16px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .insurer-select-value.is-set{color:var(--ink);}
+  .insurer-select-caret{transition:transform .15s ease;}
+  .insurer-select.is-open .insurer-select-caret{transform:rotate(180deg);}
+
+  .insurer-options{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:30;
+    list-style:none;margin:0;padding:0;max-height:280px;overflow-y:auto;
+    display:flex;flex-direction:column;gap:1px;background:var(--rule);
+    border:1px solid var(--rule);border-radius:var(--radius-sm);overflow-x:hidden;
+    box-shadow:0 8px 20px rgba(23,34,43,.12);}
+  .insurer-options[hidden]{display:none;}
+  .insurer-option{background:var(--paper);padding:11px 16px;cursor:pointer;
+    font-family:var(--f-body);font-size:15px;font-weight:500;color:var(--ink);
+    display:flex;align-items:center;justify-content:space-between;gap:10px;}
+  .insurer-option:hover,.insurer-option.is-active{background:var(--surface);}
+  .insurer-option.is-selected{color:var(--accent-ink);font-weight:600;}
+  .insurer-option-check{flex:none;color:var(--accent);opacity:0;font-size:14px;}
+  .insurer-option.is-selected .insurer-option-check{opacity:1;}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;}
+  @media (max-width:560px){ .grid2{grid-template-columns:1fr;} }
+  .grid2 .field{border-right:1px solid var(--rule-2);}
+  .grid2 .field:nth-child(2n){border-right:0;}
+  @media (max-width:560px){ .grid2 .field{border-right:0;} }
+
+  /* ---------- buttons ---------- */
+  .btn-plate{appearance:none;cursor:pointer;background:var(--accent);color:#fff;border:1px solid var(--accent);
+    border-radius:var(--radius-sm);font-family:var(--f-head);font-weight:700;font-size:16px;letter-spacing:.02em;
+    text-transform:uppercase;padding:11px 20px;width:100%;transition:background .12s ease,opacity .12s ease;}
+  .btn-plate:hover{background:var(--accent-ink);border-color:var(--accent-ink);}
+  .btn-plate:disabled{opacity:.4;cursor:not-allowed;}
+  .btn-plate:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+
+  .act{appearance:none;cursor:pointer;background:var(--paper);border:1px solid var(--rule);
+    font-family:var(--f-head);font-size:14.5px;font-weight:700;letter-spacing:.01em;text-transform:uppercase;
+    border-radius:var(--radius-sm);
+    padding:8px 14px;color:var(--ink);text-decoration:none;display:inline-flex;align-items:center;gap:7px;}
+  .act:hover{background:var(--rule-2);}
+  .act:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+
+  .act.is-send{background:var(--accent);border-color:var(--accent);color:#fff;font-size:15px;padding:9px 18px;}
+  .act.is-send:hover{background:var(--accent-ink);border-color:var(--accent-ink);}
+  .act.is-send[aria-disabled="true"]{opacity:.45;pointer-events:none;background:var(--ink-3);border-color:var(--ink-3);}
+
+  .back-link{background:none;border:0;color:var(--ink-2);font-family:var(--f-mono);font-size:12px;font-weight:500;
+    letter-spacing:.03em;text-transform:uppercase;
+    cursor:pointer;display:inline-flex;align-items:center;gap:6px;
+    padding:0;margin:0;}
+  .back-link:hover{color:var(--ink);}
+
+  /* ---------- claim type index cards: a hairline grid, like Advisor
+     Desk's idx-grid/tools grid — a 1px gap in the rule color between
+     cells stands in for individual card borders. ---------- */
+  .type-list{display:grid;grid-template-columns:1fr;gap:1px;background:var(--rule);
+    border:1px solid var(--rule);border-radius:var(--radius);overflow:hidden;}
+  @media (min-width:640px){ .type-list{grid-template-columns:1fr 1fr;} }
+  .type-row{width:100%;text-align:left;background:var(--paper);
+    display:flex;align-items:stretch;cursor:pointer;font-family:inherit;
+    color:var(--ink);transition:background .12s ease;}
+  .type-row:hover{background:var(--surface);}
+  .type-row:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;}
+  .type-flag{width:5px;background:var(--green);flex:none;}
+  .type-row.tp .type-flag{background:var(--red);}
+  .type-main{padding:var(--sp-4);min-width:0;flex:1;}
+  .type-kind{font-family:var(--f-mono);font-size:10.5px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--green);display:block;margin-bottom:var(--sp-1);}
+  .type-row.tp .type-kind{color:var(--red);}
+  .type-name{font-family:var(--f-head);font-weight:700;font-size:19px;letter-spacing:-0.01em;margin:0 0 var(--sp-1);}
+  .type-desc{color:var(--ink-2);font-size:13px;margin:0;line-height:1.5;}
+  .type-arrow{align-self:center;padding:0 var(--sp-4);color:var(--ink-3);font-size:20px;flex:none;}
+
+  /* ---------- process feed: a card of dated/ordered entries ---------- */
+  .stage-list{display:flex;flex-direction:column;gap:1px;background:var(--rule);
+    border:1px solid var(--rule);border-radius:var(--radius);overflow:hidden;}
+  .stage-row{display:flex;align-items:stretch;background:var(--paper);}
+  .stage-flag{width:5px;background:var(--amber);flex:none;}
+  .stage-num{display:flex;align-items:flex-start;justify-content:center;width:44px;flex:none;padding-top:var(--sp-3);}
+  .stage-num::before{content:attr(data-n);display:flex;align-items:center;justify-content:center;
+    width:22px;height:22px;border-radius:50%;background:var(--ink);color:var(--paper);
+    font-family:var(--f-mono);font-weight:600;font-size:11px;}
+  .stage-main{padding:var(--sp-3) var(--sp-4) var(--sp-3) 0;min-width:0;flex:1;}
+  .stage-title{font-family:var(--f-head);font-weight:700;font-size:16px;letter-spacing:.01em;margin:0 0 var(--sp-1);}
+  .stage-desc{color:var(--ink-2);font-size:13px;margin:0;line-height:1.5;}
+  .stage-desc + .stage-desc{margin-top:var(--sp-2);}
+  .stage-sla{display:inline-flex;align-items:center;margin-top:var(--sp-2);font-family:var(--f-mono);
+    font-size:11px;font-weight:500;letter-spacing:.02em;
+    color:var(--amber);background:var(--amber-bg);border-radius:999px;
+    padding:2px 9px;}
+  .stage-extra-note{margin-top:var(--sp-2);background:var(--violet-bg);color:var(--ink);
+    border-radius:var(--radius-sm);padding:var(--sp-2) var(--sp-3);}
+  .stage-sublist{margin:var(--sp-3) 0 0;padding:0;list-style:none;}
+  .stage-sublist li{display:grid;grid-template-columns:1fr auto;gap:var(--sp-3);align-items:baseline;
+    padding:var(--sp-2) 0;border-top:1px solid var(--rule-2);}
+  .stage-sublist li:first-child{border-top:0;padding-top:0;}
+  .stage-sublist .sub-label{font-size:13px;color:var(--ink);}
+  .stage-sublist .sub-time{font-family:var(--f-mono);font-size:11.5px;font-weight:500;color:var(--amber);
+    white-space:nowrap;text-align:right;}
+
+  /* ---------- selected insurer chip + status pills ---------- */
+  .selected-plate{display:inline-flex;align-items:center;gap:var(--sp-2);background:var(--paper);
+    border:1px solid var(--rule);border-radius:999px;padding:6px 14px 6px 6px;}
+  .selected-plate .code{font-family:var(--f-mono);font-weight:600;font-size:11px;letter-spacing:.03em;
+    background:var(--ink);color:var(--paper);border-radius:999px;padding:5px 9px;}
+  .selected-plate .name{font-family:var(--f-head);font-size:15px;font-weight:700;}
+
+  .claim-tag{display:inline-flex;align-items:center;font-family:var(--f-mono);font-size:11px;font-weight:500;
+    letter-spacing:.03em;text-transform:uppercase;padding:4px 10px;border-radius:999px;background:var(--green-bg);
+    color:var(--green);margin-left:var(--sp-2);vertical-align:middle;}
+  .claim-tag.tp{background:var(--red-bg);color:var(--red);}
+
+  .email-note{font-size:12px;color:var(--ink-3);margin-top:var(--sp-2);}
+  .email-note.remembered{color:var(--green);}
+
+  /* ---------- claims-email chips: the insurer's on-file address can't
+     be removed, only edited via the process step — extra recipients
+     the user adds here are suggestions and can be removed freely. ---------- */
+  .email-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px;}
+  .email-chips:empty{display:none;}
+  .email-chip{display:inline-flex;align-items:center;gap:6px;background:var(--surface);
+    border:1px solid var(--rule);border-radius:20px;padding:5px 8px 5px 12px;
+    font-family:var(--f-mono);font-size:12.5px;color:var(--ink);max-width:100%;}
+  .email-chip .addr{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .email-chip.locked{padding-right:12px;}
+  .email-chip .lock-ic{flex:none;color:var(--ink-3);}
+  .email-chip .rm{flex:none;appearance:none;border:0;background:var(--rule-2);color:var(--ink-2);
+    width:16px;height:16px;border-radius:50%;font-size:11px;line-height:1;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;padding:0;}
+  .email-chip .rm:hover{background:var(--red-bg);color:var(--red);}
+
+  /* Neutral informational callout — portal reminder, LOU note. Uses the
+     "reference" violet from Advisor Desk's docs tag, distinct from the
+     interactive cyan accent and from .ivr-note (amber, an actionable
+     call-center number). */
+  .note-block{font-size:13px;line-height:1.6;color:var(--ink-2);background:var(--violet-bg);
+    border-radius:var(--radius-sm);padding:var(--sp-3) var(--sp-4);}
+
+  /* ---------- process contact bar (single card in the sidebar) ---------- */
+  .contact-bar{display:flex;flex-direction:column;gap:1px;background:var(--rule);
+    border:1px solid var(--rule);border-radius:var(--radius);overflow:hidden;}
+  .contact-cell{padding:var(--sp-3) var(--sp-4);background:var(--paper);}
+  .contact-cell .row{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-2);}
+  /* ---------- click-to-copy: every email/phone value in the page is
+     tap/click-able and copies itself, instead of sitting next to a
+     separate Copy button. ---------- */
+  .copyable{cursor:pointer;border-bottom:1px dashed var(--rule-2);transition:color .12s ease,border-color .12s ease;}
+  .copyable:hover{color:var(--accent-ink);border-bottom-color:var(--accent);}
+  .copyable:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:2px;}
+  .copyable.copied{color:var(--green);border-bottom-color:var(--green);}
+  .copy-flag{display:none;margin-left:6px;font-family:var(--f-mono);font-size:10px;font-weight:700;
+    color:var(--green);text-transform:uppercase;letter-spacing:.03em;}
+  .copyable.copied .copy-flag{display:inline;}
+  .contact-cell .field-label{margin-bottom:var(--sp-1);}
+  .contact-cell .val{font-family:var(--f-mono);font-size:12.5px;word-break:break-word;}
+  .contact-cell .val.empty{font-family:var(--f-body);color:var(--ink-3);font-style:italic;}
+
+  /* ---------- ways to register: hairline-grid card ---------- */
+  .way-list{display:flex;flex-direction:column;gap:1px;background:var(--rule);
+    border:1px solid var(--rule);border-radius:var(--radius);overflow:hidden;}
+  .way-row{display:flex;align-items:stretch;background:var(--paper);}
+  .way-flag{width:5px;background:var(--green);flex:none;}
+  .way-row.is-email .way-flag{background:var(--accent);}
+  .way-main{padding:var(--sp-3) var(--sp-4);min-width:0;flex:1;}
+  .way-title{font-family:var(--f-head);font-weight:700;font-size:16px;margin:0 0 var(--sp-1);}
+  .way-desc{color:var(--ink-2);font-size:13px;margin:0;line-height:1.5;}
+  .way-cta{align-self:center;padding:0 var(--sp-4);flex:none;}
+  @media (max-width:480px){ .way-row{flex-wrap:wrap;} .way-cta{padding:0 0 var(--sp-3) var(--sp-4);} }
+
+  /* ---------- surveyor / directory contact rows: styled as data tables,
+     hairline-grid, zebra-striped like a call sheet ---------- */
+  .contact-list{display:flex;flex-direction:column;gap:1px;background:var(--rule);
+    border:1px solid var(--rule);border-radius:var(--radius);overflow:hidden;}
+  .contact-row{display:grid;grid-template-columns:1fr auto;gap:var(--sp-3);align-items:center;padding:var(--sp-3) var(--sp-4);
+    background:var(--paper);}
+  .contact-row:nth-child(even){background:var(--surface);}
+  .contact-row .who{font-size:13px;}
+  .contact-row .who small{display:block;color:var(--ink-3);font-size:11.5px;margin-top:1px;}
+  .contact-row .num{font-family:var(--f-mono);font-size:12px;font-weight:500;white-space:nowrap;color:var(--ink-2);}
+  /* One row = label+phone on top, the email/contact string given the
+     full card width below it — an email column squeezed between two
+     others just forces awkward mid-word breaks. */
+  .dir-row{padding:var(--sp-3) var(--sp-4);background:var(--paper);}
+  .dir-row:nth-child(even){background:var(--surface);}
+  .dir-top{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--sp-3);}
+  .dir-row .label{font-family:var(--f-head);font-weight:700;font-size:13.5px;letter-spacing:.01em;}
+  .dir-row .phone{line-height:1.5;text-align:right;font-family:var(--f-mono);font-size:12px;font-weight:500;
+    white-space:nowrap;color:var(--ink-2);flex:none;}
+  .dir-row .contact{display:block;margin-top:3px;font-family:var(--f-mono);font-size:12px;color:var(--ink-2);
+    overflow-wrap:break-word;word-break:normal;}
+  .ivr-note{font-size:12.5px;color:var(--amber);background:var(--amber-bg);
+    border-radius:var(--radius-sm);padding:var(--sp-3) var(--sp-4);margin-bottom:var(--sp-3);}
+
+  .empty-state{background:var(--paper);border:1px solid var(--rule);border-radius:var(--radius);
+    padding:var(--sp-5) 18px;text-align:center;}
+  .empty-state strong{display:block;font-family:var(--f-head);font-weight:700;font-size:17px;margin-bottom:var(--sp-1);}
+  .empty-state p{color:var(--ink-2);font-size:13px;margin:0 0 var(--sp-3);}
+  .empty-state p:last-child{margin-bottom:0;}
+  .empty-state.is-note{text-align:left;padding:var(--sp-4);margin-top:var(--sp-4);}
+
+  .edit-toggle{background:none;border:0;color:var(--ink-2);font-family:var(--f-mono);font-size:11.5px;
+    font-weight:500;letter-spacing:.02em;
+    text-decoration:underline;cursor:pointer;padding:0;margin:0;}
+  .edit-toggle:hover{color:var(--accent-ink);}
+
+  .edit-panel[hidden]{display:none;}
+  .edit-note{font-size:12.5px;color:var(--ink-3);font-style:italic;margin:0;}
+
+  /* ---------- preview ---------- */
+  .preview{background:var(--paper);border:1px solid var(--rule);border-radius:var(--radius);overflow:hidden;}
+  .preview-row{display:grid;grid-template-columns:64px 1fr;gap:var(--sp-3);padding:var(--sp-3) var(--sp-4);border-bottom:1px solid var(--rule-2);}
+  .preview-row:last-of-type{border-bottom:0;}
+  .preview-row .k{font-family:var(--f-mono);font-size:10.5px;font-weight:500;text-transform:uppercase;letter-spacing:.05em;
+    color:var(--ink-3);padding-top:2px;}
+  .preview-row .v{font-size:13.5px;word-break:break-word;}
+  .preview-row .v.subject{font-weight:700;}
+  .preview-body{white-space:pre-wrap;font-size:13px;color:var(--ink-2);padding:var(--sp-4);border-top:1px solid var(--rule-2);
+    max-height:160px;overflow-y:auto;background:var(--rule-2);}
+
+  /* Everything below here sits in step4's split-side, so vertical gaps
+     come from ".split-side > * + *" above — none of these set their own
+     margin-top, to keep that single rule the source of truth. */
+  .missing-note{font-size:12px;font-weight:600;color:var(--red);display:none;}
+  .missing-note.show{display:block;}
+
+  .action-row{display:flex;align-items:center;gap:var(--sp-3);flex-wrap:wrap;}
+  .status{font-size:12px;font-weight:600;color:var(--green);opacity:0;transition:opacity .2s ease;}
+  .status.show{opacity:1;}
+
+  .recap{border:1px solid var(--rule);background:var(--paper);border-radius:var(--radius);
+    padding:var(--sp-4);}
+  .recap-label{font-family:var(--f-mono);font-size:11px;font-weight:500;letter-spacing:.05em;text-transform:uppercase;
+    color:var(--amber);margin:0 0 var(--sp-3);}
+  .recap ol{margin:0;padding-left:18px;font-size:13px;color:var(--ink-2);line-height:1.8;}
+  .recap ol strong{color:var(--ink);}
+
+  footer{margin-top:var(--sp-6);padding-top:var(--sp-4);border-top:1px solid var(--rule);
+    font-family:var(--f-mono);font-size:11px;color:var(--ink-3);display:flex;justify-content:space-between;
+    gap:var(--sp-3);flex-wrap:wrap;}
+  footer button{background:none;border:0;color:var(--ink-3);text-decoration:underline;cursor:pointer;
+    font-family:inherit;font-size:inherit;padding:0;}
+  footer button:hover{color:var(--ink);}
+
+  .step{display:none;}
+  .step.active{display:block;}
+</style>
+</head>
+<body>
+
+<div class="masthead">
+  <div class="masthead-in">
+    <a class="home-link" href="index.html">&larr; Advisor Desk</a>
+    <h1 class="wordmark">Claim<em>.</em>Wire</h1>
+    <span class="masthead-note">Dubai &middot; Motor Claims</span>
+  </div>
+</div>
+
+<div class="shell">
+
+  <nav class="trail" id="trail">
+    <span class="crumb" data-goto="1">1&nbsp;Insurer</span>
+    <span class="crumb" data-goto="2">2&nbsp;Process</span>
+    <span class="crumb" data-goto="3">3&nbsp;Type</span>
+    <span class="crumb" data-goto="4">4&nbsp;Register</span>
+  </nav>
+
+  <!-- STEP 1 — pick insurer -->
+  <section class="step" id="step1">
+    <div class="narrow">
+      <p class="strip-label">Start here</p>
+      <p class="lede">Choose the insurance company this claim is going to. You'll get the claims process for that insurer, then the option to register a claim.</p>
+
+      <div class="insurer-field">
+        <label class="field-label" id="companySelectLabel">Insurance company</label>
+        <div class="insurer-select" id="insurerSelect" tabindex="0" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="companySelectLabel companySelectValue">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/><path d="M9 11h.01M15 11h.01M12 11h.01"/>
+          </svg>
+          <span class="insurer-select-value" id="companySelectValue">Select an insurer&hellip;</span>
+          <svg class="insurer-select-caret" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M6 9l6 6 6-6"/>
+          </svg>
+        </div>
+        <ul class="insurer-options" id="insurerOptions" role="listbox" aria-labelledby="companySelectLabel" tabindex="-1" hidden></ul>
+      </div>
+
+      <div>
+        <button class="btn-plate" id="continueTo2" disabled>Continue</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 2 — claims process for this insurer -->
+  <section class="step" id="step2">
+    <button class="back-link" id="backTo1">&larr; Change insurer</button>
+    <div class="selected-plate" id="selectedPlate2"></div>
+    <p class="strip-label">How a claim gets registered</p>
+    <p class="lede" id="processIntro"></p>
+
+    <div class="split">
+      <div class="split-main">
+        <div id="registerWaysSection"></div>
+        <div id="processBody"></div>
+        <div id="louSection"></div>
+      </div>
+      <div class="split-side">
+        <p class="strip-label">Quick contacts</p>
+        <div class="contact-bar" id="contactBar"></div>
+        <div id="surveyorSection"></div>
+        <div id="directorySection"></div>
+      </div>
+    </div>
+
+    <button class="edit-toggle" id="editToggle" type="button">Edit process details for this insurer</button>
+
+    <div class="edit-panel" id="editPanel" hidden>
+      <p class="edit-note">Grouped to match the sections on this page — save, and each field updates the matching card above.</p>
+
+      <!-- mirrors the "Quick contacts" card in the sidebar -->
+      <p class="strip-label">Quick contacts</p>
+      <div class="controls">
+        <div class="grid2">
+          <div class="field">
+            <label class="field-label" for="edit-to">Claims email</label>
+            <input id="edit-to" type="email" placeholder="claims@insurer.ae">
+          </div>
+          <div class="field">
+            <label class="field-label" for="edit-cc">Cc</label>
+            <input id="edit-cc" type="email" placeholder="broker@example.com">
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label" for="edit-roadside">Roadside assistance number</label>
+          <input id="edit-roadside" type="text" placeholder="e.g. 800 xxxx">
+        </div>
+      </div>
+
+      <!-- mirrors the "Ways to register" card -->
+      <p class="strip-label">Ways to register</p>
+      <div class="controls">
+        <div class="grid2">
+          <div class="field">
+            <label class="field-label" for="edit-portalurl">Online portal URL <span class="hint">(optional)</span></label>
+            <input id="edit-portalurl" type="text" placeholder="https://insurer.ae/eclaim">
+          </div>
+          <div class="field">
+            <label class="field-label" for="edit-portalnote">Portal note <span class="hint">(optional)</span></label>
+            <input id="edit-portalnote" type="text" placeholder="e.g. Own-policy claims only, faster than email">
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label" style="display:flex;align-items:center;gap:8px;text-transform:none;letter-spacing:0;font-family:var(--f-body);font-size:13.5px;color:var(--ink);">
+            <input id="edit-portalownonly" type="checkbox" style="width:auto;">
+            Portal only works for own-policy (comprehensive) claims &mdash; third party must use email
+          </label>
+        </div>
+        <div class="field">
+          <label class="field-label" for="edit-registernote">Note shown under "Ways to register" <span class="hint">(optional)</span></label>
+          <textarea id="edit-registernote" placeholder="Anything worth flagging about registering the claim itself"></textarea>
+        </div>
+        <div class="field">
+          <label class="field-label" for="edit-regsla">Registration turnaround</label>
+          <input id="edit-regsla" type="text" placeholder="e.g. 24 working hours">
+        </div>
+        <div class="field">
+          <label class="field-label" for="edit-regnote">Note shown next to "Registration confirmed" <span class="hint">(optional)</span></label>
+          <textarea id="edit-regnote" placeholder="Anything worth flagging right at registration, e.g. don't wait to send the client to a workshop"></textarea>
+        </div>
+      </div>
+
+      <!-- mirrors the "After you register" timeline card -->
+      <p class="strip-label">Assessment, survey &amp; approval timeline</p>
+      <div class="controls">
+        <div class="field">
+          <label class="field-label" for="edit-repairtimeline">One stage per line <span class="hint">— "Stage : timeframe". Defaults to Sukoon's timeline until you override it.</span></label>
+          <textarea id="edit-repairtimeline" placeholder="Inspection & quote submission : 1-3 working days"></textarea>
+        </div>
+      </div>
+
+      <!-- mirrors the "Rental / CCB" stage — only shows live if this is filled in -->
+      <p class="strip-label">Rental / CCB</p>
+      <div class="controls">
+        <div class="field">
+          <label class="field-label" for="edit-ccb">Note shown on the process page <span class="hint">— leave blank to hide this stage entirely</span></label>
+          <input id="edit-ccb" type="text" placeholder="e.g. Apply for CCB once approved, if eligible">
+        </div>
+      </div>
+
+      <!-- mirrors the "Surveyor contacts" card -->
+      <p class="strip-label">Surveyor contacts</p>
+      <div class="controls">
+        <div class="field">
+          <label class="field-label" for="edit-surveyors">One per line <span class="hint">— e.g. "0501234567-Name"</span></label>
+          <textarea id="edit-surveyors" placeholder="0501234567-Name"></textarea>
+        </div>
+      </div>
+
+      <!-- mirrors the "Department directory" card -->
+      <p class="strip-label">Department directory</p>
+      <div class="controls">
+        <div class="field">
+          <label class="field-label" for="edit-ivr">Call center number / IVR note <span class="hint">(optional)</span></label>
+          <input id="edit-ivr" type="text" placeholder="e.g. 800405 — press 2-1-1 for claims follow-up">
+        </div>
+        <div class="field">
+          <label class="field-label" for="edit-directory">One row per line <span class="hint">— Label, contact, phone (tab or double-space separated). Got more than one contact or number for a row? Separate them with ";" and each one shows on its own line, e.g. "1st level: a@x.com; 2nd level: b@x.com".</span></label>
+          <textarea id="edit-directory" placeholder="Repair approval&#9;Motor Claims &lt;claims@insurer.ae&gt;&#9;800xxx"></textarea>
+        </div>
+      </div>
+
+      <!-- mirrors the "Notes" card at the end of the process list -->
+      <p class="strip-label">Notes</p>
+      <div class="controls">
+        <div class="field" style="border-bottom:0;">
+          <label class="field-label" for="edit-notes">Shown at the end of the process list <span class="hint">(optional)</span></label>
+          <textarea id="edit-notes" placeholder="Anything else specific to this insurer's process"></textarea>
+        </div>
+      </div>
+
+      <div>
+        <button class="btn-plate" id="saveProcess" type="button" style="width:auto;padding:11px 20px;">Save process details</button>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- STEP 3 — claim type -->
+  <section class="step" id="step3">
+    <div class="mid">
+      <button class="back-link" id="backTo2">&larr; Back to process</button>
+      <div class="selected-plate" id="selectedPlate3"></div>
+      <p class="strip-label">Claim type</p>
+      <p class="lede">Is this being registered under the customer's own policy, or against another driver's insurer as a third party?</p>
+
+      <div id="portalReminder"></div>
+
+      <div class="type-list">
+        <button class="type-row own" id="pickOwn" type="button">
+          <span class="type-flag"></span>
+          <span class="type-main">
+            <span class="type-kind">Own claim</span>
+            <span class="type-name">My Own Insurance</span>
+            <p class="type-desc">Registering a claim on the customer's own motor policy with this insurer (own damage).</p>
+          </span>
+          <span class="type-arrow">&rsaquo;</span>
+        </button>
+        <button class="type-row tp" id="pickTp" type="button">
+          <span class="type-flag"></span>
+          <span class="type-main">
+            <span class="type-kind">TP claim</span>
+            <span class="type-name">Third Party Insurance</span>
+            <p class="type-desc">Claiming against this company as the at-fault driver's (third party) insurer.</p>
+          </span>
+          <span class="type-arrow">&rsaquo;</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 4 — details + send -->
+  <section class="step" id="step4">
+    <button class="back-link" id="backTo3">&larr; Change claim type</button>
+    <p class="lede">
+      <strong id="step4CompanyName" style="color:var(--ink);font-family:var(--f-head);font-weight:700;font-size:17px;"></strong>
+      <span class="claim-tag" id="step4TypeBadge"></span>
+    </p>
+
+    <div class="split">
+      <div class="split-main">
+        <p class="strip-label">Claim details</p>
+        <div class="controls">
+          <div class="grid2">
+            <div class="field">
+              <label class="field-label" for="policy">Policy number</label>
+              <input id="policy" type="text" placeholder="POL-000000">
+            </div>
+            <div class="field">
+              <label class="field-label" for="plate">Plate number</label>
+              <input id="plate" type="text" placeholder="A 12345">
+            </div>
+          </div>
+          <div class="grid2">
+            <div class="field">
+              <label class="field-label" for="workshop">Preferred repair location / workshop</label>
+              <input id="workshop" type="text" placeholder="e.g. Al Quoz &mdash; Speedex Garage">
+            </div>
+            <div class="field">
+              <label class="field-label" for="clientcontact">Client contact number</label>
+              <input id="clientcontact" type="text" placeholder="e.g. 050 123 4567">
+            </div>
+          </div>
+        </div>
+
+        <p class="strip-label">Recipients</p>
+        <div class="controls">
+          <div class="grid2">
+            <div class="field">
+              <label class="field-label" for="toAdd">Claims email</label>
+              <div class="email-chips" id="toChips"></div>
+              <input id="toAdd" type="email" placeholder="Add a recipient, then press Enter">
+              <div class="email-note" id="toNote"></div>
+            </div>
+            <div class="field">
+              <label class="field-label" for="ccAdd">Cc <span class="hint">(optional)</span></label>
+              <div class="email-chips" id="ccChips"></div>
+              <input id="ccAdd" type="email" placeholder="Add a recipient, then press Enter">
+            </div>
+          </div>
+        </div>
+
+        <p class="strip-label">Message</p>
+        <div class="controls">
+          <div class="field">
+            <label class="field-label" for="subject">Subject <span class="hint">&mdash; fills in automatically, editable</span></label>
+            <input id="subject" type="text">
+          </div>
+          <div class="field">
+            <label class="field-label" for="body">Message <span class="hint">&mdash; edit freely, tokens work here too</span></label>
+            <textarea id="body" style="min-height:160px;"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="split-side">
+        <p class="strip-label">Preview</p>
+        <div class="preview">
+          <div class="preview-row"><div class="k">To</div><div class="v" id="pv-to"></div></div>
+          <div class="preview-row"><div class="k">Cc</div><div class="v" id="pv-cc"></div></div>
+          <div class="preview-row"><div class="k">Subject</div><div class="v subject" id="pv-subject"></div></div>
+          <div class="preview-body" id="pv-body"></div>
+        </div>
+        <div class="missing-note" id="missingNote"></div>
+
+        <div class="action-row">
+          <a class="act is-send" id="openGmail" href="#" target="claimwire-gmail" rel="noopener noreferrer" aria-disabled="true">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3 6.5L12 13L21 6.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              <rect x="3" y="5" width="18" height="14" rx="1" stroke="currentColor" stroke-width="1.8"/>
+            </svg>
+            Open in Gmail
+          </a>
+          <button class="act" id="copyBody" type="button">Copy message text</button>
+          <span class="status" id="statusMsg">Copied</span>
+          <a class="act" id="fallbackLink" href="#" target="claimwire-gmail" rel="noopener noreferrer" style="display:none;">Link not opening? Click here</a>
+        </div>
+
+        <div class="recap" id="recapBox">
+          <p class="recap-label">What happens after you send this</p>
+          <ol id="recapList"></ol>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <span>Claims emails and process notes are remembered per insurer, on this device only.</span>
+      <button id="startOver" type="button">Start a new claim</button>
+    </footer>
+  </section>
+
+</div>
+
+<script>
+(function () {
+  const COMPANIES = [
+    "Sukoon Insurance",
+    "LIVA Insurance",
+    "GIG Gulf (AXA)",
+    "Qatar Insurance Company",
+    "Tokio Marine",
+    "Noor Takaful / Watania",
+    "Oriental Insurance",
+    "DNI",
+    "SALAMA Insurance",
+    "Al Sagar Insurance",
+    "Fidelity Insurance",
+    "ADNIC",
+    "Methaq",
+    "AFNIC",
+    "Iran Insurance Company",
+    "Dubai Insurance Company"
+  ].map(name => ({ id: name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, ""), name }));
+
+  // The Sukoon assessment/approval timeline doubles as the default shown
+  // for any insurer that hasn't had its own timeline entered yet.
+  const DEFAULT_REPAIR_TIMELINE = "Inspection & quote submission : 1-3 working days (can take longer if damage is major)\nSurvey : within 1-3 working days from quote submission\nRepair approval : within 3-5 working days (minor) to 10-15 working days (major) from survey\nRepair duration : to be announced post approval\nCar release approval : 1-2 working days upon submission of proforma invoice by agency to insurance";
+
+  // Seeded from what you gave us directly — everything else starts blank
+  // until you fill it in on the Process step (then it's remembered here).
+  const SEED_PLAYBOOKS = {
+    "sukoon-insurance": {
+      to: "motorclaims@sukoon.com",
+      cc: "ashmy.arackal@insurancemarket.ae",
+      regSla: "24 working hours",
+      ccb: "The client can opt for a rental car or the Courtesy Cash Benefit (CCB) once the claim is approved — which one depends on what's included in their policy.",
+      notes: "",
+      ivrNote: "800405 — after connecting, press 2-1-1 on the IVR menu to reach the claims follow-up queue.",
+      roadsideNumber: "800 6565",
+      repairTimelineRaw: DEFAULT_REPAIR_TIMELINE,
+      surveyorsRaw: "0525541683-Sanal\n0509672221-Faraz\n0505391222/0557879646-Anoop\n0544321121-Vinish\n0561755519-Mustafa\n0505228106-Edgardo\n054 594 5519-Krishnaraj (escalation POC)",
+      directoryRaw: "All enquiries\tMotor Claims motorclaims@sukoon.com\t800405 (2-1-1)\nCall Center Manager\tLarry Ramirez larry.ramirez@omaninsurance.ae\t800405 (2-1-1)\nRent-a-car approval\tMotor Claims motorclaims@sukoon.com\t800405 (2-1-1)\nCash loss settlement\tAfsal.Basheer@sukoon.com\t800405 (2-1-1)\nTotal loss approval\tMotor Claims motorclaims@sukoon.com\t800405 (2-1-1)\nLOU approval processing\tMotor Claims motorclaims@sukoon.com\t800405 (2-1-1)\nRent-a-car refund\tMotor Claims motorclaims@sukoon.com\t800405 (2-1-1)\nRepair approval\tMotor Claims motorclaims@sukoon.com\t800405 (2-1-1)\nDelay escalation\tKrishnaraj.Balasubramaniam@sukoon.com\t054 594 5519\nSettlement team\tMadiha.Jadoue@sukoon.com\t\nRelationship manager\traunak.dineshbhaivyas@sukoon.com\t55 729 7296"
+    },
+    "liva-insurance": {
+      to: "PartnerClaims.ae@livainsurance.com",
+      cc: "ashmy.arackal@insurancemarket.ae",
+      regSla: "",
+      ccb: "Rental Car — included for 10 days. Call 044020707 to book and mention the claim number. 24 working hours advance booking is required.",
+      notes: "",
+      ivrNote: "800774 — press 1 then 3 on the IVR menu to reach claims.",
+      roadsideNumber: "600544060",
+      repairTimelineRaw: "",
+      surveyorsRaw: "",
+      portalUrl: "https://www.livainsurance.ae/car/eclaim/index",
+      portalOwnOnly: true,
+      portalNote: "Portal registration is fast, but only works when the client holds comprehensive (own) insurance. For third-party claims, you must register by email instead.",
+      directoryRaw: "All enquiries\tPartnerClaims.ae@livainsurance.com\t800774 - 1 - 3\nCall Center Manager\tMohsin.Maqbool@livainsurance.com\t\nRent-a-car approval\tPartnerClaims.ae@livainsurance.com\t800774 - 1 - 3\nTotal loss approval\tPartnerClaims.ae@livainsurance.com\t800774 - 1 - 3\nLOU approval processing\tPartnerClaims.ae@livainsurance.com\tAhmed KP - 0505860541\nRepair approval\tPartnerClaims.ae@livainsurance.com (cc George.Varghese@livainsurance.com)\tGeorge - 050-3507201\nDelay escalation\tPartnerClaims.ae@livainsurance.com (cc George.Varghese@livainsurance.com)\tGeorge - 050-3507201\nClaims head\tPartnerClaims.ae@livainsurance.com (cc Sunita.Pais@livainsurance.com)\tSunita - 50 454 8451\nRelationship manager\tNabeela\t971503413409"
+    },
+    "gig-gulf-axa": {
+      to: "motorclaims.registration@gig-gulf.com",
+      cc: "ashmy.arackal@insurancemarket.ae",
+      regSla: "",
+      ccb: "The client can opt for a rental car if it's included in their policy.",
+      notes: "",
+      ivrNote: "800 292 — key sequence varies by department (see directory below for the exact digits to press).",
+      roadsideNumber: "800292",
+      repairTimelineRaw: "",
+      surveyorsRaw: "",
+      portalUrl: "https://giggulfuae-gi-ext.insuremo.com/login/#/?_k=jgs34o",
+      portalOwnOnly: false,
+      portalNote: "Online claim registration portal.",
+      directoryRaw: "All enquiries\tmotorclaims.registration@gig-gulf.com\thttps://goo.gl/maps/4pRYfSPTBsajNQtD8\nCall Center Manager\tAbdul.Wakil@gig-gulf.com\t\nRent-a-car approval\tmotorclaims.registration@gig-gulf.com\t800 292 - 1 - 3 - 4 - 2\nTotal loss approval\tmotorclaims.ml@gig-gulf.com\t800 292 - 1 - 3 - 4 - 3 (Mon-Fri till 5pm only)\nRefund\tmotorclaims.registration@gig-gulf.com (office: https://goo.gl/maps/4pRYfSPTBsajNQtD8)\t800292 - 1 - 3 - 4 - 3\nRepair approval\tmotorclaims.ml@gig-gulf.com\t800292 - 1 - 3 - 4 - 3\nLPO / final LPO escalation\t1st level: bimal.nair@gig-gulf.com; 2nd level: anil.vincent@gig-gulf.com\tBimal (+971 56 508 1082); Anil (+971 50 249 1227)\nRegistration / AAA delay escalation\t1st level: Abdul.Wakil@gig-gulf.com\t\nRelationship manager\tFinal level escalation: Suhail.Ismail@gig-gulf.com\t056 177 1200"
+    },
+    "qatar-insurance-company": {
+      to: "support@qatarinsurancegroup.zohodesk.ae, motorclaims@qicuae.com",
+      cc: "ashmy.arackal@insurancemarket.ae",
+      regSla: "",
+      ccb: "Client can avail a rental car once the repair estimation has been shared with the insurance company.",
+      notes: "",
+      ivrNote: "8004742 — press 1-1-1 on the IVR menu for all enquiries.",
+      roadsideNumber: "600508181",
+      repairTimelineRaw: "",
+      surveyorsRaw: "",
+      portalUrl: "https://www.i-insured.com/UAE/insurance-claims",
+      portalOwnOnly: false,
+      portalNote: "Website is fast — email registration takes 24 working hours instead. Both comprehensive and third-party claims can be registered through the website.",
+      directoryRaw: "All enquiries\tmotorclaims@qicuae.com : https://www.i-insured.com/UAE/insurance-claims\t8004742 1-1-1\nFor hire approval\tmotorclaims@qicuae.com\t8004742 1-1-1\nTotal loss\tmahmoud.kalil@qicuae.com\t04 7024 938/0565030760\nRefund / LOU refund\tmotorclaims@qicuae.com\t8004742\nTotal loss cheque\tmotorclaims@qicuae.com; Escalation point: ayuob@qicuae.com (retail); Mahmoud@qicuae.com (commercial)\t8004742\nDelay repair / LPO super escalation\tmotorclaims@qicuae.com; Escalation point: Basheer.ahamed@qicuae.com\t8004742; BASHEER Direct: +971 4 7024 902 | M: +971 566868020\nCall center manager\twalaa.alsahin@qicgroup.com.qa\t\nComplaints with repair work\tkalidas.ponnusamy@qicuae.com\t47024991/ 564016572\nRelationship manager\tRajesh Nair rajesh.nair@qicuae.com\t056 5035 883"
+    },
+    "tokio-marine": {
+      to: "claim@tmnf.ae, shahbaz@tmnf.ae",
+      cc: "ashmy.arackal@insurancemarket.ae",
+      regSla: "24 working hours",
+      ccb: "Two rental car options:\n\nOption A: a free rental car for up to 10/20 repair days. A refundable deposit of approx. AED 1500 is held on the hire company's credit card; 2 working days advance booking is mandatory.\n\nOption B: a refund of up to AED 100/day excl. VAT for up to 10/20 repair days. You may choose any rental company, but VAT, insurance, fuel, parking, fines, CDW, tracker and delivery fees are not refundable. Refund requires: the repair completion job card, the rental agreement & invoice, Emirates ID, and a tax invoice showing both the vendor's and Tokio Marine's TRN (Tokio Marine TRN: 100289623900003).",
+      notes: "",
+      regNote: "",
+      registerNote: "You don't have to wait for claim registration to share the workshop list with the client — they can pick a workshop from the list and go straight for inspection.",
+      ivrNote: "",
+      roadsideNumber: "600503030",
+      repairTimelineRaw: "",
+      surveyorsRaw: "",
+      directoryRaw: "All enquiries\tclaim@tmnf.ae; ghulam@tmnf.ae\t600503030 -1-1-0\nRent-a-car approval\tshahbaz@tmnf.ae\t565041551\nTotal loss approval\tshahbaz@tmnf.ae\t565041551\nAdditional contact\tsujatha@tmnf.ae\t600503030\nAdditional contact\tKAMRAN@tmnf.ae\t600503030\nEscalation\ttiju@tmnf.ae\t600503030\nRelationship manager\tTIJU JOSEPH - tiju@tmnf.ae\t551239290"
+    },
+    "noor-takaful-watania": {
+      to: "motorclaims@watania.ae",
+      cc: "zahoor.ahmed@watania.ae, rimaaz.ahmed@watania.ae, ashmy.arackal@insurancemarket.ae",
+      regSla: "",
+      ccb: "Customer can avail a rental car as per their policy.",
+      notes: "",
+      ivrNote: "",
+      roadsideNumber: "600 575 751",
+      repairTimelineRaw: "",
+      surveyorsRaw: "",
+      directoryRaw: "All enquiries\tmotorclaims@watania.ae\t8009282642\nCall center manager\tmotorclaims@watania.ae\t8009282642\nRent-a-car approval\tmotorclaims@watania.ae\t8009282642\nTotal loss approval\tmotorclaims@watania.ae\t8009282642\nLOU approval processing\tmotorclaims@watania.ae\t8009282642\nRent-a-car refund\tmotorclaims@watania.ae\t8009282642\nRepair approval\tmotorclaims@watania.ae\t8009282642\nDelay escalation — Head of Claims\tRaghu Varma\t\nRelationship manager\tCharles Pink\t"
+    },
+    "oriental-insurance": {
+      to: "motorclaims@oicgulf.ae",
+      cc: "gagan@oicgulf.ae, ashmy.arackal@insurancemarket.ae",
+      regSla: "",
+      ccb: "Customer can call 600575751 to avail a rental car.",
+      notes: "",
+      ivrNote: "",
+      roadsideNumber: "600575751",
+      repairTimelineRaw: "",
+      surveyorsRaw: "",
+      portalUrl: "https://oicgulf.net/claims/",
+      portalOwnOnly: false,
+      portalNote: "Portal registration is recommended — the email option is slow.",
+      directoryRaw: "All enquiries\tgagan@oicgulf.ae\t04 353 8688 | Extn: 163 OR 159\nCall center manager\tTO: motorclaims@oicgulf.ae; CC: gagan@oicgulf.ae\t04 353 8688 | Extn: 163\nRent-a-car approval\tTO: motorclaims@oicgulf.ae; CC: gagan@oicgulf.ae\t04 353 8688 | Extn: 163\nTotal loss approval\tTO: motorclaims@oicgulf.ae; CC: gagan@oicgulf.ae\t04 353 8688 | Extn: 163\nLOU approval processing\tTO: motorclaims@oicgulf.ae; CC: gagan@oicgulf.ae\t04 353 8688 | Extn: 163\nRent-a-car refund\tTO: motorclaims@oicgulf.ae; CC: gagan@oicgulf.ae\t04 353 8688 | Extn: 163\nRepair approval\tTO: motorclaims@oicgulf.ae; CC: gagan@oicgulf.ae\t04 353 8688 | Extn: 163\nDelay escalation — Head of Claims\tkishore@oicgulf.ae\t567248875 Kishore\nRelationship manager\tkishore@oicgulf.ae\t56 724 8875 Kishore"
+    },
+    "dni": {
+      to: "angelie.s@dni.ae, nassima.e@dni.ae",
+      cc: "mustafa.m@dni.ae, serafino.r@dni.ae, ashmy.arackal@insurancemarket.ae",
+      regSla: "24-48 working hours",
+      ccb: "Client can avail a rental car for 7 days as per the policy — send an email to RAC@dni.ae, copying Ashmy Arackal and mustafa.m@dni.ae.",
+      notes: "",
+      ivrNote: "",
+      roadsideNumber: "600575751",
+      repairTimelineRaw: "",
+      surveyorsRaw: "",
+      portalUrl: "https://www.dni.ae/personal-insurance/motor/submit-motor-claim/",
+      portalOwnOnly: false,
+      portalNote: "Portal registration is recommended — either way it takes 24-48 working hours.",
+      directoryRaw: "Call center\tTO: motorclaims@dnirc.com; cc: Serafino Silveira serafino.s@dni.ae; Ammar Chawki ammar@dnirc.com; Madiha Jadoue madiha@dnirc.com; Mujipur Natharbava mujipur@dnirc.com; Muhammad Atif m.atif@dni.ae; Poorna Shetty poorna.s@dni.ae\tWhatsApp: 600-580-000; T: +971-4-5969524\nCall center manager\tSerafino Ricardo serafino.r@dni.ae\t0566806425\nRent-a-car approval\trac@dni.ae; Muammer.y@dni.ae; mustafa.m@dni.ae\t04-5969513 (Mustafa - 0565334662)\nTotal loss approval\tMujipur.r@dni.ae; Mujeeb.r@dni.ae\t\nLOU approval processing\tirshad.a@dni.ae; ilyaz.h@dni.ae; mustafa.m@dni.ae\t04-5969513\nRent-a-car refund\tcl@dni.ae; Muammer.y@dni.ae; mustafa.m@dni.ae\t04-5969513\nRepair approval\tkishor@dnirc.com; m.atif@dni.ae; Motor-Surveyor-Group@dni.ae\tKishore - 04-5969536 (asst. manager); Mujeeb - 04-5969532 (senior supervisor)\nDelay escalation\tserafino.r@dni.ae / haitham.i@dni.ae\tM: +971-56-6806425; T: +971-4-5969530\nRelationship manager\tUJJWAL\t"
+    },
+    "salama-insurance": {
+      to: "customer.support@salama.ae, motorclaims@salama.ae",
+      cc: "amita.jacob@salama.ae, hibba.abbas@salama.ae, saeed.shannir@salama.ae, ashmy.arackal@insurancemarket.ae",
+      regSla: "24-48 working hours",
+      ccb: "Client can avail a rental car as per their policy.",
+      notes: "",
+      ivrNote: "",
+      roadsideNumber: "800725262",
+      repairTimelineRaw: "",
+      surveyorsRaw: "",
+      directoryRaw: "All enquiries\tclaimsbranch@salama.ae / motorclaims@salama.ae\t043577000\nLPO\tmary.cabalo@salama.ae; mudassar.latif@salama.ae\t\nRent-a-car approval\tYomna Shouman Yomna.Shouman@salama.ae\t971 4 5203342\nTotal loss approval\tYomna Shouman Yomna.Shouman@salama.ae\t971 4 5203342\nLOU approval processing\tYomna Shouman Yomna.Shouman@salama.ae\t971 4 5203342\nRent-a-car refund\tYomna Shouman Yomna.Shouman@salama.ae\t971 4 5203342\nRepair approval\tYomna Shouman Yomna.Shouman@salama.ae / Ronnie Verceles Ugay ronnie.ugay@salama.ae\t971 4 5203342; T: +971 4 5203328; M: +971 56 8693255\nDelay escalation\tYomna Shouman Yomna.Shouman@salama.ae / Ronnie Verceles Ugay ronnie.ugay@salama.ae\t\nRelationship manager\tAMITA JACOB amita.jacob@salama.ae\t056 501 0343\nHead of operation\tFadi ElHoayek — Head of Operations Fadi.elhoayek@salama.ae\t0509092966"
+    },
+    "al-sagar-insurance": {
+      to: "docs@alsagrins.ae, motorclaimsdxb@alsagrins.ae, haitham.alshaikh@alsagrins.ae",
+      cc: "mohamed.maher@alsagrins.ae, rana.alsaadi@alsagrins.ae, akram.alkhatib@alsagrins.ae, ashmy.arackal@insurancemarket.ae",
+      regSla: "24-48 working hours",
+      ccb: "As per the policy, the client is eligible for a rental car.",
+      notes: "",
+      regNote: "This insurer is slow to process — you'll need to actively follow up on registrations.",
+      ivrNote: "",
+      roadsideNumber: "8007541",
+      repairTimelineRaw: "",
+      surveyorsRaw: "",
+      directoryRaw: "All enquiries\tMotorclaimsdxb@alsagrins.ae / docs@alsagrins.ae\t9714-7028500\nCall center manager\tRana Al Saadi — Manager, Customer Relations Rana.Alsaadi@alsagrins.ae\t+971 (04) 7028 500\nRent-a-car approval\tHaitham AlShaikh — Assistant Manager, Motor Claims Haitham.AlShaikh@alsagrins.ae\t9714-7028558; +971 50 651 8060\nLOU approval processing\tNahel Ahmed — Supervisor, Motor Claims Nahel.Ahmed@alsagrins.ae\t+9714-7028500\nRent-a-car refund\tNahel Ahmed — Supervisor, Motor Claims Nahel.Ahmed@alsagrins.ae\t+9714-7028500\nRepair approval\tHaitham AlShaikh — Assistant Manager, Motor Claims Haitham.AlShaikh@alsagrins.ae\t9714-7028558; +971 50 651 8060\nDelay escalation\tRana Al Saadi — Manager, Customer Relations Rana.Alsaadi@alsagrins.ae\t+971 (04) 7028 500\nRelationship manager\tBRM-Safaa.Ashiq@alsagrins.ae; Rana Al Saadi — Manager, Customer Relations Rana.Alsaadi@alsagrins.ae\t+971 (04) 7028 500"
+    },
+    "fidelity-insurance": {
+      to: "claims@fidelityunited.ae, recoveryclaims@fidelityunited.ae, evelyn.hualda@fidelityunited.ae",
+      cc: "ashmy.arackal@insurancemarket.ae",
+      regSla: "24 working hours",
+      ccb: "As per the policy, the client is eligible for a rental car.",
+      notes: "",
+      ivrNote: "",
+      roadsideNumber: "800-4101",
+      repairTimelineRaw: "",
+      surveyorsRaw: "",
+      directoryRaw: "Registration & follow up\tClaims@fidelityunited.ae; RecoveryClaims@fidelityunited.ae; evelyn.hualda@fidelityunited.ae\t06 5013916 / NASREEN 800842, 06 568 2277 Ext:916 (Nasreen 553027069); SYED 0543059254 (Manager); elsayed.agag@fidelityunited.ae\nAll enquiries\tclaims@fidelityunited.ae\t\nFollow up & approval pending cases\tjamin.ghani@fidelityunited.ae; ibrahim.mahmood@fidelityunited.ae\t0524053054 — Jamin, Sr. Claims Handler\nRAC\tyomna.shouman@fidelityunited.ae\tYomna\nEscalation\telsayed.agag@fidelityunited.ae\tSayed, Claims Manager — 0543059254\nAppointed surveyor\t\t0506848103 — Royson, Surveyor appointed CLA by Fidelity United\nSuper escalation\t\t"
+    },
+    "adnic": {
+      to: "motorclaims@adnic.ae, dxbmotorrepair@adnic.ae",
+      cc: "j.alblooshi@adnic.ae, j.hasan@adnic.ae, b.alzaabi@adnic.ae, s.almrzouky@adnic.ae, ashmy.arackal@insurancemarket.ae",
+      regSla: "",
+      ccb: "Rental car is always handled by reimbursement or LOU.",
+      notes: "",
+      ivrNote: "",
+      roadsideNumber: "800 8040",
+      repairTimelineRaw: "",
+      surveyorsRaw: "",
+      portalUrl: "https://adnic.ae/personal-claim-motor",
+      portalOwnOnly: false,
+      portalNote: "Portal registration is recommended.",
+      directoryRaw: ""
+    },
+    "methaq": {
+      to: "info@methaq.ae, mtrclmsdxb@methaq.ae",
+      cc: "ashmy.arackal@insurancemarket.ae",
+      regSla: "",
+      ccb: "",
+      notes: "Rental car process — to be added once confirmed.",
+      ivrNote: "",
+      roadsideNumber: "600 565 695",
+      repairTimelineRaw: "",
+      surveyorsRaw: "",
+      portalUrl: "https://claim.methaq.ae/claim",
+      portalOwnOnly: false,
+      portalNote: "Portal registration is recommended.",
+      directoryRaw: "LPO\tMohd TAYYAB m.tayyab@methaq.ae; Ahmed Saber ahmed.s@methaq.ae\t0552965551\nFollow up\tinfo@methaq.ae / mtrclmsdxb@methaq.ae\t+971 4 2601 665"
+    },
+    "afnic": {
+      to: "callcenter@fujinsco.ae, dubclaims@fujinsco.ae",
+      cc: "ashmy.arackal@insurancemarket.ae",
+      regSla: "",
+      ccb: "Rental car is only via LOU.",
+      notes: "",
+      regNote: "Client must drop the vehicle at the claims yard for survey — bring copies of the police report, registration card (mulkiya), Emirates ID, and driving license. Once registered, the car is surveyed and then sent for repair.\n\nOpen Mon–Thu 8:00am–4:00pm (survey hours 9:00am–2:00pm) and Fri 8:00am–2:00pm (survey hours 9:00am–12:00pm).\n\nClaims yard: Damascus Street, 12 4th St, Industrial Area 2, Al Qusais (behind Dubai Residential Oasis) — Tel: 04 286 9210. Map: https://maps.google.com/?q=25.281466,55.389591",
+      ivrNote: "",
+      roadsideNumber: "80023642",
+      repairTimelineRaw: "",
+      surveyorsRaw: "",
+      directoryRaw: "Registration & follow up\t\tTel: 042869210 — WhatsApp 0502111479"
+    },
+    "iran-insurance-company": {
+      to: "info@bimehir.ae, heysam@bimehir.ae",
+      cc: "safieh@bimehir.ae, ashmy.arackal@insurancemarket.ae",
+      regSla: "",
+      ccb: "Rental car is only via LOU.",
+      notes: "",
+      regNote: "Client must visit the dedicated location in person for claim registration. Location: https://g.page/IranInsuranceDubai?share",
+      ivrNote: "",
+      roadsideNumber: "+971 50 2119895",
+      repairTimelineRaw: "",
+      surveyorsRaw: "",
+      directoryRaw: "Claim followup\theysam@bimehir.ae\tTel: 04-2225181, Ext. 410"
+    },
+    "dubai-insurance-company": {
+      to: "customerservice@dubins.ae",
+      cc: "abbas.w@dubins.ae, ghani.j@dubins.ae, diconlineclaims@dubins.ae, ashmy.arackal@insurancemarket.ae",
+      regSla: "",
+      ccb: "Rental car is LOU only (refer).",
+      notes: "",
+      regNote: "This insurer is slow — active followup is required. Approval contact: kumar.d@dubins.ae.",
+      ivrNote: "",
+      roadsideNumber: "600 575 751",
+      repairTimelineRaw: "",
+      surveyorsRaw: "",
+      directoryRaw: "Followup\tDICOnlineClaims@dubins.ae\tcall 042693030 Ext. 150"
+    }
+  };
+
+  const PLAYBOOK_KEY = "claimwire-playbooks-v1";
+
+  function loadPlaybooks() {
+    try { return JSON.parse(localStorage.getItem(PLAYBOOK_KEY) || "{}"); }
+    catch (e) { return {}; }
+  }
+  function savePlaybooks(map) { try { localStorage.setItem(PLAYBOOK_KEY, JSON.stringify(map)); } catch (e) {} }
+
+  function getPlaybook(companyId) {
+    const stored = loadPlaybooks();
+    return stored[companyId] || SEED_PLAYBOOKS[companyId] || null;
+  }
+  function setPlaybook(companyId, data) {
+    const stored = loadPlaybooks();
+    stored[companyId] = data;
+    savePlaybooks(stored);
+  }
+
+  function code(name) {
+    const clean = name.replace(/\(.*?\)/g, "").trim();
+    const words = clean.split(/\s+/).filter(Boolean);
+    return ((words[0]?.[0] || "") + (words[1]?.[0] || "")).toUpperCase();
+  }
+
+  let state = { company: null, type: null };
+
+  const steps = { 1: document.getElementById("step1"), 2: document.getElementById("step2"),
+    3: document.getElementById("step3"), 4: document.getElementById("step4") };
+  const crumbs = Array.from(document.querySelectorAll(".trail .crumb"));
+
+  function goTo(n) {
+    if (n >= 2 && !state.company) n = 1;
+    if (n >= 4 && !state.type) n = state.company ? 2 : 1;
+    Object.entries(steps).forEach(([k, el]) => el.classList.toggle("active", Number(k) === n));
+    crumbs.forEach(c => {
+      const target = Number(c.dataset.goto);
+      c.classList.toggle("active", target === n);
+      c.classList.toggle("done", target < n);
+    });
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  crumbs.forEach(c => c.addEventListener("click", () => {
+    const target = Number(c.dataset.goto);
+    if (target === 1 || (target === 2 && state.company) || (target === 3 && state.company) || (target === 4 && state.type)) goTo(target);
+  }));
+
+  // ---------- step 1: custom insurer dropdown ----------
+  const insurerSelect = document.getElementById("insurerSelect");
+  const insurerOptions = document.getElementById("insurerOptions");
+  const companySelectValue = document.getElementById("companySelectValue");
+  const continueBtn1 = document.getElementById("continueTo2");
+  let companySelectVal = "";
+  let insurerActiveIndex = -1;
+
+  const insurerOptionEls = COMPANIES.map(c => {
+    const li = document.createElement("li");
+    li.className = "insurer-option";
+    li.setAttribute("role", "option");
+    li.setAttribute("aria-selected", "false");
+    li.dataset.id = c.id;
+    li.innerHTML = `<span>${c.name}</span><span class="insurer-option-check">&#10003;</span>`;
+    li.addEventListener("click", () => { pickCompany(c.id); closeInsurerOptions(); });
+    insurerOptions.appendChild(li);
+    return li;
+  });
+
+  function pickCompany(id) {
+    companySelectVal = id;
+    const c = COMPANIES.find(x => x.id === id);
+    companySelectValue.textContent = c ? c.name : "Select an insurer…";
+    companySelectValue.classList.toggle("is-set", !!c);
+    insurerOptionEls.forEach(el => {
+      const sel = el.dataset.id === id;
+      el.classList.toggle("is-selected", sel);
+      el.setAttribute("aria-selected", sel ? "true" : "false");
+    });
+    continueBtn1.disabled = !companySelectVal;
+  }
+
+  function openInsurerOptions() {
+    insurerOptions.hidden = false;
+    insurerSelect.classList.add("is-open");
+    insurerSelect.setAttribute("aria-expanded", "true");
+    insurerActiveIndex = Math.max(0, insurerOptionEls.findIndex(el => el.dataset.id === companySelectVal));
+    setInsurerActive(insurerActiveIndex);
+  }
+  function closeInsurerOptions() {
+    insurerOptions.hidden = true;
+    insurerSelect.classList.remove("is-open");
+    insurerSelect.setAttribute("aria-expanded", "false");
+  }
+  function setInsurerActive(i) {
+    insurerOptionEls.forEach(el => el.classList.remove("is-active"));
+    if (insurerOptionEls[i]) {
+      insurerOptionEls[i].classList.add("is-active");
+      insurerOptionEls[i].scrollIntoView({ block: "nearest" });
+    }
+    insurerActiveIndex = i;
+  }
+
+  insurerSelect.addEventListener("click", () => {
+    insurerOptions.hidden ? openInsurerOptions() : closeInsurerOptions();
+  });
+  insurerSelect.addEventListener("keydown", (e) => {
+    if (["Enter", " ", "ArrowDown", "ArrowUp"].includes(e.key)) e.preventDefault();
+    if (e.key === "Enter" || e.key === " ") {
+      if (insurerOptions.hidden) { openInsurerOptions(); }
+      else { const el = insurerOptionEls[insurerActiveIndex]; if (el) { pickCompany(el.dataset.id); } closeInsurerOptions(); }
+    } else if (e.key === "ArrowDown") {
+      if (insurerOptions.hidden) openInsurerOptions();
+      else setInsurerActive(Math.min(insurerOptionEls.length - 1, insurerActiveIndex + 1));
+    } else if (e.key === "ArrowUp") {
+      if (insurerOptions.hidden) openInsurerOptions();
+      else setInsurerActive(Math.max(0, insurerActiveIndex - 1));
+    } else if (e.key === "Escape") {
+      closeInsurerOptions();
+    }
+  });
+  document.addEventListener("click", (e) => {
+    if (!insurerSelect.contains(e.target) && !insurerOptions.contains(e.target)) closeInsurerOptions();
+  });
+
+  continueBtn1.addEventListener("click", () => {
+    const chosen = COMPANIES.find(c => c.id === companySelectVal);
+    if (!chosen) return;
+    selectCompany(chosen);
+  });
+
+  function plateHtml(company) {
+    return `<span class="code">${code(company.name)}</span><span class="name">${company.name}</span>`;
+  }
+
+  function selectCompany(company) {
+    state.company = company;
+    state.type = null;
+    document.getElementById("selectedPlate2").innerHTML = plateHtml(company);
+    document.getElementById("selectedPlate3").innerHTML = plateHtml(company);
+    renderPortalReminder(company);
+    enterStep2();
+    goTo(2);
+  }
+
+  function renderPortalReminder(company) {
+    const el = document.getElementById("portalReminder");
+    const pb = getPlaybook(company.id);
+    if (!pb || !pb.portalUrl) { el.innerHTML = ""; return; }
+    const msg = pb.portalOwnOnly
+      ? `Own-policy claims can also go through the <a href="${escapeHtml(pb.portalUrl)}" target="_blank" rel="noopener noreferrer" style="color:var(--accent-ink);">online portal</a> &mdash; faster than email. Third-party claims must be registered by email (continue below).`
+      : `This insurer also has an <a href="${escapeHtml(pb.portalUrl)}" target="_blank" rel="noopener noreferrer" style="color:var(--accent-ink);">online portal</a> for either claim type &mdash; use whichever you prefer, or continue below for email.`;
+    el.innerHTML = `<div class="note-block">${msg}</div>`;
+  }
+
+  document.getElementById("backTo1").addEventListener("click", () => goTo(1));
+
+  // ---------- step 2: process ----------
+  const STAGES = [
+    { title: "Registration confirmed", desc: "Insurer confirms the registration. Once confirmed, share the details with the client and ask them to bring the vehicle to the workshop.", slaKey: "regSla" },
+    { title: "Assessment, survey & approval", desc: "", slaKey: "repairTimeline" },
+    { title: "Rental / CCB", desc: "", slaKey: "ccb" }
+  ];
+
+  function renderProcess() {
+    const company = state.company;
+    const pb = getPlaybook(company.id);
+
+    const intro = document.getElementById("processIntro");
+    const contactBar = document.getElementById("contactBar");
+    const body = document.getElementById("processBody");
+
+    if (!pb) {
+      intro.textContent = `No claims process documented yet for ${company.name}.`;
+      contactBar.innerHTML = "";
+      body.innerHTML = `<div class="empty-state">
+        <strong>Nothing on file for this insurer</strong>
+        <p>Add the claims email, Cc, and turnaround times below and they'll be remembered here next time.</p>
+      </div>`;
+      document.getElementById("surveyorSection").innerHTML = "";
+      document.getElementById("directorySection").innerHTML = "";
+      document.getElementById("registerWaysSection").innerHTML = "";
+      document.getElementById("louSection").innerHTML = "";
+      return;
+    }
+
+    intro.textContent = `How to register and follow through a claim with ${company.name}.`;
+
+    contactBar.innerHTML = `
+      <div class="contact-cell">
+        <span class="field-label">Claims email</span>
+        <div class="row">
+          <span class="val ${pb.to ? "" : "empty"}">${pb.to ? copyableSpan(pb.to) : "Not set"}</span>
+        </div>
+      </div>
+      <div class="contact-cell">
+        <span class="field-label">Cc</span>
+        <div class="row">
+          <span class="val ${pb.cc ? "" : "empty"}">${pb.cc ? copyableSpan(pb.cc) : "Not set"}</span>
+        </div>
+      </div>
+      <div class="contact-cell">
+        <span class="field-label">Roadside assistance</span>
+        <span class="val ${pb.roadsideNumber ? "" : "empty"}">${pb.roadsideNumber ? copyableSpan(pb.roadsideNumber) : "Not set"}</span>
+      </div>`;
+
+    renderLouNote();
+    renderRegisterWays(pb);
+
+    const visibleStages = STAGES.filter(s => s.slaKey !== "ccb" || pb.ccb);
+    body.innerHTML = `<p class="strip-label">After you register</p><div class="stage-list">` + visibleStages.map((s, i) => {
+      let sla = "";
+      if (s.slaKey === "regSla" && pb.regSla) sla = `<span class="stage-sla">Usually within ${escapeHtml(pb.regSla)}</span>`;
+      let regNote = "";
+      if (s.slaKey === "regSla" && pb.regNote) regNote = `<p class="stage-desc stage-extra-note">${escapeHtml(pb.regNote)}</p>`;
+
+      if (s.slaKey === "repairTimeline") {
+        const items = (pb.repairTimelineRaw || DEFAULT_REPAIR_TIMELINE).split("\n").map(l => l.trim()).filter(Boolean).map(parseTimelineLine);
+        const list = `<ul class="stage-sublist">` + items.map(it =>
+          `<li><span class="sub-label">${escapeHtml(it.label)}</span><span class="sub-time">${escapeHtml(it.time)}</span></li>`
+        ).join("") + `</ul>`;
+        return `<div class="stage-row">
+          <span class="stage-flag"></span>
+          <span class="stage-num" data-n="${i + 1}"></span>
+          <span class="stage-main">
+            <p class="stage-title">${escapeHtml(s.title)}</p>
+            <p class="stage-desc">Once the car is at the workshop, here's what to expect next.</p>
+            ${list}
+          </span>
+        </div>`;
+      }
+
+      const desc = s.slaKey === "ccb" ? pb.ccb : s.desc;
+      return `<div class="stage-row">
+        <span class="stage-flag"></span>
+        <span class="stage-num" data-n="${i + 1}"></span>
+        <span class="stage-main">
+          <p class="stage-title">${escapeHtml(s.title)}</p>
+          ${paraHtml(desc, "stage-desc")}
+          ${sla}
+          ${regNote}
+        </span>
+      </div>`;
+    }).join("") + `</div>`;
+
+    if (pb.notes) {
+      body.innerHTML += `<div class="empty-state is-note">
+        <strong>Notes</strong><p>${escapeHtml(pb.notes)}</p></div>`;
+    }
+
+    renderSurveyors(pb);
+    renderDirectory(pb);
+  }
+
+  function renderLouNote() {
+    const el = document.getElementById("louSection");
+    el.innerHTML = `<p class="strip-label">LOU (Loss of Use)</p>
+      <div class="note-block">
+        On a recovery or third-party claim, the client can opt to take a LOU amount instead of repair.
+        After repair approval, the insurance company will confirm the daily limit — based on that limit and the job card's IN and OUT dates, the client gets reimbursed.
+      </div>`;
+  }
+
+  function renderRegisterWays(pb) {
+    const el = document.getElementById("registerWaysSection");
+    let html = `<p class="strip-label">Ways to register</p><div class="way-list">`;
+    if (pb.portalUrl) {
+      html += `<div class="way-row">
+        <span class="way-flag"></span>
+        <span class="way-main">
+          <p class="way-title">Online portal${pb.portalOwnOnly ? " &mdash; own policy only" : ""}</p>
+          <p class="way-desc">${escapeHtml(pb.portalNote || (pb.portalOwnOnly ? "Faster than email, but only works for comprehensive (own) claims." : "Online claim registration."))}</p>
+        </span>
+        <span class="way-cta"><a class="act" href="${escapeHtml(pb.portalUrl)}" target="_blank" rel="noopener noreferrer">Open portal</a></span>
+      </div>`;
+    }
+    let emailTitle = "Email";
+    let emailDesc = "Fill in the claim details and send from the form below — used for both own-policy and third-party claims.";
+    if (pb.portalUrl && pb.portalOwnOnly) {
+      emailTitle = "Email &mdash; required for third-party claim";
+      emailDesc = "Works for own-policy claims too, if you'd rather not use the portal.";
+    } else if (pb.portalUrl && !pb.portalOwnOnly) {
+      emailTitle = "Email";
+      emailDesc = "Alternative to the portal above &mdash; use whichever you prefer, for either own-policy or third-party claims.";
+    }
+    html += `<div class="way-row is-email">
+        <span class="way-flag"></span>
+        <span class="way-main">
+          <p class="way-title">${emailTitle}</p>
+          <p class="way-desc">${emailDesc}</p>
+        </span>
+        <span class="way-cta"><button class="act is-send" id="registerViaEmailBtn" type="button">Register a claim &rarr;</button></span>
+      </div></div>`;
+    if (pb.registerNote) {
+      html += `<div class="note-block" style="margin-top:var(--sp-3);">${escapeHtml(pb.registerNote)}</div>`;
+    }
+    el.innerHTML = html;
+
+    document.getElementById("registerViaEmailBtn").addEventListener("click", () => {
+      renderPortalReminder(state.company);
+      goTo(3);
+    });
+  }
+
+  function parseTimelineLine(line) {
+    const m = line.match(/^(.*?):(.*)$/);
+    if (!m) return { label: line.trim(), time: "" };
+    return { label: m[1].trim(), time: m[2].trim() };
+  }
+
+  function parseSurveyorLine(line) {
+    const m = line.match(/^(.*?)[-=](.*)$/);
+    if (!m) return { phone: line.trim(), label: "" };
+    return { phone: m[1].trim(), label: m[2].trim() };
+  }
+
+  function renderSurveyors(pb) {
+    const el = document.getElementById("surveyorSection");
+    const raw = (pb.surveyorsRaw || "").split("\n").map(l => l.trim()).filter(Boolean);
+    if (!raw.length) { el.innerHTML = ""; return; }
+    el.innerHTML = `<p class="strip-label">Surveyor contacts</p><div class="contact-list">` +
+      raw.map(line => {
+        const { phone, label } = parseSurveyorLine(line);
+        return `<div class="contact-row">
+          <span class="who">${escapeHtml(label || "Surveyor")}</span>
+          <span class="num">${copyableSpan(phone)}</span>
+        </div>`;
+      }).join("") + `</div>`;
+  }
+
+  function parseDirectoryLine(line) {
+    let parts = line.split(/\t+/).map(p => p.trim());
+    if (parts.length < 2) parts = line.split(/\s{2,}/).map(p => p.trim());
+    parts = parts.filter((p, i) => i === 0 || p !== "");
+    return { label: parts[0] || "", contact: parts[1] || "", phone: parts[2] || "" };
+  }
+
+  // A contact or phone cell with more than one entry — "1st level: a@x.com;
+  // 2nd level: b@x.com" — is split on ";" and put one per line, instead of
+  // running together until the browser wraps it wherever it happens to fit.
+  function multiLine(s) {
+    return s.split(/;\s*/).map(part => part.trim()).filter(Boolean).map(wrapContacts).join("<br>");
+  }
+
+  function renderDirectory(pb) {
+    const el = document.getElementById("directorySection");
+    const raw = (pb.directoryRaw || "").split("\n").map(l => l.trim()).filter(Boolean);
+    if (!raw.length && !pb.ivrNote) { el.innerHTML = ""; return; }
+    let html = `<p class="strip-label">Department directory</p>`;
+    if (pb.ivrNote) html += `<div class="ivr-note">${escapeHtml(pb.ivrNote)}</div>`;
+    if (raw.length) {
+      html += `<div class="contact-list">` + raw.map(line => {
+        const { label, contact, phone } = parseDirectoryLine(line);
+        return `<div class="dir-row">
+          <div class="dir-top">
+            <span class="label">${escapeHtml(label)}</span>
+            ${phone ? `<span class="phone">${multiLine(phone)}</span>` : ""}
+          </div>
+          ${contact ? `<span class="contact">${multiLine(contact)}</span>` : ""}
+        </div>`;
+      }).join("") + `</div>`;
+    }
+    el.innerHTML = html;
+  }
+
+  function escapeHtml(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+
+  // A description with a blank line in it ("\n\n") renders as separate
+  // <p> blocks instead of one run-on paragraph — used for text like the
+  // Rental/CCB note when it lists more than one option.
+  function paraHtml(text, cls) {
+    return (text || "").split(/\n\s*\n/).map(p => p.trim()).filter(Boolean)
+      .map(p => `<p class="${cls}">${escapeHtml(p)}</p>`).join("");
+  }
+
+  // ---------- click-to-copy: wraps any email/phone value so clicking or
+  // tapping it copies the value directly, instead of a separate button. ----------
+  function copyableSpan(text) {
+    const esc = escapeHtml(text);
+    return `<span class="copyable" data-copy="${esc}" tabindex="0" role="button" title="Click to copy">${esc}<span class="copy-flag">Copied</span></span>`;
+  }
+
+  // Directory cells often carry more than one address/number in a single
+  // string — "PartnerClaims.ae@livainsurance.com (cc George.Varghese@…)",
+  // "1st level: bimal.nair@gig-gulf.com" — only the email/phone token
+  // itself should be copyable, not the surrounding label or parenthetical.
+  const CONTACT_TOKEN_RE = /([A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,})|(\+?\d[\d\s-]{4,}\d)/g;
+  function wrapContacts(text) {
+    let out = "";
+    let last = 0;
+    let m;
+    CONTACT_TOKEN_RE.lastIndex = 0;
+    while ((m = CONTACT_TOKEN_RE.exec(text)) !== null) {
+      const raw = m[0];
+      if (m[2] && (raw.match(/\d/g) || []).length < 6) continue; // skip short digit runs like "2-1-1"
+      out += escapeHtml(text.slice(last, m.index));
+      out += copyableSpan(raw.trim());
+      last = m.index + raw.length;
+    }
+    out += escapeHtml(text.slice(last));
+    return out;
+  }
+
+  const copyTimers = new WeakMap();
+  async function activateCopyable(el) {
+    const text = el.dataset.copy;
+    if (!text) return;
+    try {
+      await navigator.clipboard.writeText(text);
+      el.classList.add("copied");
+      clearTimeout(copyTimers.get(el));
+      copyTimers.set(el, setTimeout(() => el.classList.remove("copied"), 1300));
+    } catch (e) { /* clipboard unavailable — silently ignore */ }
+  }
+  document.addEventListener("click", (e) => {
+    const el = e.target.closest(".copyable");
+    if (el) activateCopyable(el);
+  });
+  document.addEventListener("keydown", (e) => {
+    if ((e.key === "Enter" || e.key === " ") && e.target.classList && e.target.classList.contains("copyable")) {
+      e.preventDefault();
+      activateCopyable(e.target);
+    }
+  });
+
+  function enterStep2() {
+    renderProcess();
+    const editPanel = document.getElementById("editPanel");
+    editPanel.hidden = true;
+    document.getElementById("editToggle").textContent = "Edit process details for this insurer";
+    const pb = getPlaybook(state.company.id) || {};
+    document.getElementById("edit-to").value = pb.to || "";
+    document.getElementById("edit-cc").value = pb.cc || "";
+    document.getElementById("edit-regsla").value = pb.regSla || "";
+    document.getElementById("edit-regnote").value = pb.regNote || "";
+    document.getElementById("edit-registernote").value = pb.registerNote || "";
+    document.getElementById("edit-ccb").value = pb.ccb || "";
+    document.getElementById("edit-notes").value = pb.notes || "";
+    document.getElementById("edit-ivr").value = pb.ivrNote || "";
+    document.getElementById("edit-roadside").value = pb.roadsideNumber || "";
+    document.getElementById("edit-portalurl").value = pb.portalUrl || "";
+    document.getElementById("edit-portalnote").value = pb.portalNote || "";
+    document.getElementById("edit-portalownonly").checked = !!pb.portalOwnOnly;
+    document.getElementById("edit-repairtimeline").value = pb.repairTimelineRaw || DEFAULT_REPAIR_TIMELINE;
+    document.getElementById("edit-surveyors").value = pb.surveyorsRaw || "";
+    document.getElementById("edit-directory").value = pb.directoryRaw || "";
+  }
+
+  document.getElementById("editToggle").addEventListener("click", () => {
+    const panel = document.getElementById("editPanel");
+    panel.hidden = !panel.hidden;
+    document.getElementById("editToggle").textContent = panel.hidden
+      ? "Edit process details for this insurer" : "Hide editor";
+  });
+
+  document.getElementById("saveProcess").addEventListener("click", () => {
+    setPlaybook(state.company.id, {
+      to: document.getElementById("edit-to").value.trim(),
+      cc: document.getElementById("edit-cc").value.trim(),
+      regSla: document.getElementById("edit-regsla").value.trim(),
+      regNote: document.getElementById("edit-regnote").value.trim(),
+      registerNote: document.getElementById("edit-registernote").value.trim(),
+      ccb: document.getElementById("edit-ccb").value.trim(),
+      notes: document.getElementById("edit-notes").value.trim(),
+      ivrNote: document.getElementById("edit-ivr").value.trim(),
+      roadsideNumber: document.getElementById("edit-roadside").value.trim(),
+      portalUrl: document.getElementById("edit-portalurl").value.trim(),
+      portalNote: document.getElementById("edit-portalnote").value.trim(),
+      portalOwnOnly: document.getElementById("edit-portalownonly").checked,
+      repairTimelineRaw: document.getElementById("edit-repairtimeline").value,
+      surveyorsRaw: document.getElementById("edit-surveyors").value,
+      directoryRaw: document.getElementById("edit-directory").value
+    });
+    document.getElementById("editPanel").hidden = true;
+    document.getElementById("editToggle").textContent = "Edit process details for this insurer";
+    renderProcess();
+  });
+
+  // ---------- step 3: claim type ----------
+  document.getElementById("pickOwn").addEventListener("click", () => selectType("own"));
+  document.getElementById("pickTp").addEventListener("click", () => selectType("tp"));
+  document.getElementById("backTo2").addEventListener("click", () => goTo(2));
+
+  function selectType(type) {
+    state.type = type;
+    enterStep4();
+    goTo(4);
+  }
+
+  // ---------- step 4: form ----------
+  const ids = ["policy", "plate", "workshop", "clientcontact", "subject", "body"];
+  const els = {};
+  ids.forEach(id => els[id] = document.getElementById(id));
+
+  // Claims-email chips: the first (insurer-on-file) address is locked and
+  // can't be removed here — it only changes from the Process step's saved
+  // playbook. Anything added after that is a per-email suggestion the
+  // user can remove again.
+  const toAddInput = document.getElementById("toAdd");
+  const toChipsWrap = document.getElementById("toChips");
+  let toEmails = [];
+
+  function toEmailsString() { return toEmails.map(e => e.addr).join(", "); }
+
+  function renderToChips() {
+    toChipsWrap.innerHTML = toEmails.map((e, i) => `
+      <span class="email-chip${e.locked ? " locked" : ""}">${e.locked ? '<svg class="lock-ic" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>' : ""}<span class="addr">${escapeHtml(e.addr)}</span>${e.locked ? "" : `<button type="button" class="rm" data-i="${i}" aria-label="Remove ${escapeHtml(e.addr)}">&times;</button>`}</span>`).join("");
+    toChipsWrap.querySelectorAll(".rm").forEach(btn => btn.addEventListener("click", () => {
+      toEmails.splice(Number(btn.dataset.i), 1);
+      renderToChips();
+      render();
+    }));
+  }
+
+  function addToEmailFromInput() {
+    const val = toAddInput.value.trim();
+    if (!val) return;
+    const hasLocked = toEmails.some(e => e.locked);
+    toEmails.push({ addr: val, locked: !hasLocked });
+    toAddInput.value = "";
+    renderToChips();
+    render();
+  }
+  toAddInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === ",") { e.preventDefault(); addToEmailFromInput(); }
+  });
+  toAddInput.addEventListener("blur", () => addToEmailFromInput());
+
+  // Cc chips: same rule — the saved Cc address on file can't be removed
+  // here, but extra addresses can be added as one-off suggestions.
+  const ccAddInput = document.getElementById("ccAdd");
+  const ccChipsWrap = document.getElementById("ccChips");
+  let ccEmails = [];
+
+  function ccEmailsString() { return ccEmails.map(e => e.addr).join(", "); }
+
+  function renderCcChips() {
+    ccChipsWrap.innerHTML = ccEmails.map((e, i) => `
+      <span class="email-chip${e.locked ? " locked" : ""}">${e.locked ? '<svg class="lock-ic" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>' : ""}<span class="addr">${escapeHtml(e.addr)}</span>${e.locked ? "" : `<button type="button" class="rm" data-i="${i}" aria-label="Remove ${escapeHtml(e.addr)}">&times;</button>`}</span>`).join("");
+    ccChipsWrap.querySelectorAll(".rm").forEach(btn => btn.addEventListener("click", () => {
+      ccEmails.splice(Number(btn.dataset.i), 1);
+      renderCcChips();
+      render();
+    }));
+  }
+
+  function addCcEmailFromInput() {
+    const val = ccAddInput.value.trim();
+    if (!val) return;
+    const hasLocked = ccEmails.some(e => e.locked);
+    ccEmails.push({ addr: val, locked: !hasLocked });
+    ccAddInput.value = "";
+    renderCcChips();
+    render();
+  }
+  ccAddInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === ",") { e.preventDefault(); addCcEmailFromInput(); }
+  });
+  ccAddInput.addEventListener("blur", () => addCcEmailFromInput());
+
+  function fillTokens(str) {
+    const policy = els.policy.value.trim();
+    const plate = els.plate.value.trim();
+    const workshop = els.workshop.value.trim();
+    const client = els.clientcontact.value.trim();
+    const company = state.company ? state.company.name : "";
+    const tpPrefix = state.type === "tp" ? "TP " : "";
+    return str
+      .replaceAll("{{policy}}", policy || "—")
+      .replaceAll("{{plate}}", plate || "—")
+      .replaceAll("{{workshop}}", workshop || "—")
+      .replaceAll("{{clientcontact}}", client || "—")
+      .replaceAll("{{company}}", company)
+      .replaceAll("{{tp}}", tpPrefix);
+  }
+
+  document.getElementById("backTo3").addEventListener("click", () => goTo(3));
+
+  function enterStep4() {
+    const company = state.company;
+    document.getElementById("step4CompanyName").textContent = company.name;
+    const badge = document.getElementById("step4TypeBadge");
+    badge.textContent = state.type === "tp" ? "TP claim" : "Own claim";
+    badge.className = "claim-tag" + (state.type === "tp" ? " tp" : "");
+
+    els.subject.value = "{{tp}}{{company}} Motor Claim || {{policy}} || {{plate}}";
+    els.body.value = "Dear Team,\n\nKindly register the claim and assign to {{workshop}}.\n\nPolicy Number: {{policy}}\nPlate Number: {{plate}}\nClient Contact Number: {{clientcontact}}\n\nRegards,";
+
+    const pb = getPlaybook(company.id);
+    toEmails = [];
+    if (pb && pb.to) {
+      pb.to.split(",").map(s => s.trim()).filter(Boolean).forEach((addr, i) => toEmails.push({ addr, locked: i === 0 }));
+    }
+    renderToChips();
+    ccEmails = [];
+    if (pb && pb.cc) {
+      pb.cc.split(",").map(s => s.trim()).filter(Boolean).forEach((addr, i) => ccEmails.push({ addr, locked: i === 0 }));
+    }
+    renderCcChips();
+
+    els.policy.value = "";
+    els.plate.value = "";
+    els.workshop.value = "";
+    els.clientcontact.value = "";
+
+    updateToNote();
+    renderRecap();
+    render();
+  }
+
+  function updateToNote() {
+    const note = document.getElementById("toNote");
+    const pb = getPlaybook(state.company.id);
+    if (pb && pb.to) {
+      note.textContent = "From this insurer's saved process — edit if it's changed.";
+      note.classList.add("remembered");
+    } else {
+      note.textContent = "Not on file yet — enter it once and save it from the Process step to remember it.";
+      note.classList.remove("remembered");
+    }
+  }
+
+  function renderRecap() {
+    const pb = getPlaybook(state.company.id);
+    const list = document.getElementById("recapList");
+    if (!pb) {
+      document.getElementById("recapBox").style.display = "none";
+      return;
+    }
+    document.getElementById("recapBox").style.display = "";
+    const items = [];
+    items.push(`Registration is usually confirmed within <strong>${escapeHtml(pb.regSla || "the insurer's usual turnaround")}</strong> — once confirmed, pass the details to the client and ask them to bring the car to the workshop.`);
+    const stages = (pb.repairTimelineRaw || DEFAULT_REPAIR_TIMELINE).split("\n").map(l => l.trim()).filter(Boolean).map(parseTimelineLine);
+    stages.forEach(st => items.push(`<strong>${escapeHtml(st.label)}</strong>${st.time ? ": " + escapeHtml(st.time) : ""}.`));
+    if (pb.ccb) items.push(escapeHtml(pb.ccb));
+    list.innerHTML = items.map(t => `<li>${t}</li>`).join("");
+  }
+
+  function render() {
+    const subjectFilled = fillTokens(els.subject.value);
+    const bodyFilled = fillTokens(els.body.value);
+
+    const toStr = toEmailsString();
+    const ccStr = ccEmailsString();
+    document.getElementById("pv-to").textContent = toStr || "(no claims email set)";
+    document.getElementById("pv-cc").textContent = ccStr || "(none)";
+    document.getElementById("pv-subject").textContent = subjectFilled;
+    document.getElementById("pv-body").textContent = bodyFilled;
+
+    const missingBits = [];
+    if (!toStr) missingBits.push("claims email");
+    if (!els.policy.value.trim()) missingBits.push("policy number");
+    if (!els.plate.value.trim()) missingBits.push("plate number");
+    if (!els.clientcontact.value.trim()) missingBits.push("client contact number");
+    const note = document.getElementById("missingNote");
+    if (missingBits.length) {
+      note.textContent = "Still missing: " + missingBits.join(", ") + ".";
+      note.classList.add("show");
+    } else {
+      note.classList.remove("show");
+    }
+
+    const gmailLink = document.getElementById("openGmail");
+    const hasTo = !!toStr;
+    gmailLink.setAttribute("aria-disabled", hasTo ? "false" : "true");
+    if (hasTo) {
+      const to = encodeURIComponent(toStr);
+      const cc = encodeURIComponent(ccStr);
+      const su = encodeURIComponent(subjectFilled);
+      const bodyParam = encodeURIComponent(bodyFilled);
+      let url = `https://mail.google.com/mail/?view=cm&tf=cm&fs=1&to=${to}&su=${su}&body=${bodyParam}`;
+      if (ccStr) url += `&cc=${cc}`;
+      gmailLink.href = url;
+      document.getElementById("fallbackLink").href = url;
+    } else {
+      gmailLink.href = "#";
+    }
+
+    // Keep the insurer's saved claims email/cc in sync — only the locked
+    // (on-file) address persists to the playbook; addresses added here as
+    // suggestions stay local to this claim and are never saved.
+    const lockedAddr = (toEmails.find(e => e.locked) || {}).addr || "";
+    const lockedCc = (ccEmails.find(e => e.locked) || {}).addr || "";
+    if (state.company && lockedAddr) {
+      const pb = getPlaybook(state.company.id) || {};
+      if (pb.to !== lockedAddr || (pb.cc || "") !== lockedCc) {
+        setPlaybook(state.company.id, Object.assign({}, pb, { to: lockedAddr, cc: lockedCc }));
+        updateToNote();
+      }
+    }
+  }
+
+  ids.forEach(id => els[id].addEventListener("input", () => {
+    document.getElementById("fallbackLink").style.display = "none";
+    render();
+  }));
+
+  document.getElementById("openGmail").addEventListener("click", function (e) {
+    if (this.getAttribute("aria-disabled") === "true" || this.href.endsWith("#")) {
+      e.preventDefault();
+      return;
+    }
+    setTimeout(() => { document.getElementById("fallbackLink").style.display = "inline-flex"; }, 400);
+  });
+
+  document.getElementById("copyBody").addEventListener("click", async function () {
+    const text = fillTokens(els.body.value);
+    const status = document.getElementById("statusMsg");
+    try {
+      await navigator.clipboard.writeText(text);
+      status.textContent = "Copied";
+    } catch (e) {
+      status.textContent = "Couldn't copy — select manually";
+    }
+    status.classList.add("show");
+    setTimeout(() => status.classList.remove("show"), 1600);
+  });
+
+  document.getElementById("startOver").addEventListener("click", function () {
+    state = { company: null, type: null };
+    companySelectVal = "";
+    companySelectValue.textContent = "Select an insurer…";
+    companySelectValue.classList.remove("is-set");
+    insurerOptionEls.forEach(el => { el.classList.remove("is-selected"); el.setAttribute("aria-selected", "false"); });
+    closeInsurerOptions();
+    continueBtn1.disabled = true;
+    goTo(1);
+  });
+
+  goTo(1);
+})();
+</script>
+</body>
+</html>
