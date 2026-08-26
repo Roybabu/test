@@ -149,7 +149,7 @@ input[type="search"]::-webkit-search-results-decoration{
    ----------------------------------------------------------------------------
    Each design arrives in a way that suits what it is: the dispatch board
    flaps, the job card feeds in like paper, the console warms up like a CRT,
-   the directory turns a page. core.js puts .gf-in-<id> on #stage for the
+   the directory turns a page. core-v4.js puts .gf-in-<id> on #stage for the
    length of the animation and removes it afterwards, so no transform is
    left behind to trap position:fixed children.
 

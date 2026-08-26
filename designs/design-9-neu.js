@@ -1,7 +1,7 @@
 /* Neu — Neumorphism, carved surfaces, animated & interactive
    This design's page: its own header, its own filter controls, its own
    cards. It reads the shared workshop list from window.GF_DATA and
-   registers itself with core.js.
+   registers itself with core-v4.js.
 
    Extras beyond the shared engine: a grid/list view toggle, collapsible
    filters, per-visitor "saved" workshops (starred, kept in localStorage

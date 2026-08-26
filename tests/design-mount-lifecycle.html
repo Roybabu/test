@@ -2,7 +2,7 @@
 <p id="result">Running…</p>
 <script>
 (async()=>{
-  const src=await fetch('../core.js').then(r=>r.text());
+  const src=await fetch('../core-v4.js').then(r=>r.text());
   const checks=[
     ['mount token guards', (src.match(/seq !== mountSeq/g)||[]).length>=4],
     ['destroy on remount', src.includes('previous.destroy()')],

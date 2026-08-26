@@ -1,7 +1,7 @@
 /* Board — Industrial dispatch board, plate strip
    This design's page: its own header, its own filter controls, its own
    cards. It reads the shared workshop list from window.GF_DATA and
-   registers itself with core.js. */
+   registers itself with core-v4.js. */
 
 var design = {
   id: "board",

@@ -1,31 +1,50 @@
-# Garage Finder — upload guide
+# Advisor Desk / Garage Finder / Claim.Wire — upload guide
 
 Upload **every file in this folder** into the same folder on your server.
 Paths are relative, so there is nothing to configure.
 
+This repo now serves three linked pages from one site, cross-linked from
+each page's masthead/nav:
+
+| Page | File | What it is |
+|---|---|---|
+| **Advisor Desk** | `index.html` | The site's home page — shift board, scripts/docs index, escalation matrix, ops feed |
+| **Garage Finder** | `garage-finder.html` | UAE workshop directory (agency + non-agency), the original app this repo was built around |
+| **Claim.Wire** | `claimwire.html` | Per-insurer claim registration steps, contacts, and a Gmail-compose form |
+
+`index.html` being Advisor Desk (not Garage Finder) matters for hosting:
+static hosts like GitHub Pages serve whatever is named `index.html` as the
+site root, so Advisor Desk is what visitors land on by default.
 
 ## Folder layout
 
 ```
 garage-finder-site/
-├── index.html          public entry
-├── admin.html          review entry
-├── submit.php          form endpoint
-├── core.js             shared engine (window.GF)
+├── index.html          Advisor Desk — site home page
+├── garage-finder.html  Garage Finder — workshop directory (public entry for that tool)
+├── claimwire.html      Claim.Wire — claim registration wizard
+├── admin.html          Garage Finder's review entry
+├── submit.php          Garage Finder's form endpoint
+├── core-v4.js          Garage Finder's shared engine (window.GF)
+├── security-v4.js      Garage Finder's shared HTML-escaping helper (window.GF_SECURITY)
+├── advisor-desk.js     Advisor Desk's page script
+├── claimwire.js        Claim.Wire's page script
 ├── README.md
 │
-├── data/               workshop + insurer data (edit these)
+├── data/                          workshop + insurer data (edit these)
 │   ├── data-agency.js
 │   ├── data-nonagency.js
-│   └── data-insurers.js
+│   ├── data-insurers.js           master insurer list — also the source for Claim.Wire's dropdown (via claimwireId)
+│   └── data-claimwire-playbooks.js  Claim.Wire's per-insurer contacts/SLAs/directories
 │
 ├── css/                all stylesheets
-│   ├── shared.css
-│   ├── admin.css
-│   ├── styles.css
-│   └── design-*.css
+│   ├── shared.css      Garage Finder's picker + add-workshop form
+│   ├── admin.css / styles.css   Garage Finder's admin page
+│   ├── design-*.css    Garage Finder's six designs
+│   ├── advisor-desk.css
+│   └── claimwire.css
 │
-├── designs/            one JS file per visual theme
+├── designs/            one JS file per Garage Finder visual theme
 │   └── design-*.js
 │
 ├── admin/
@@ -37,7 +56,7 @@ garage-finder-site/
 ## Architecture
 
 ```
-core.js
+core-v4.js
 │
 ├── data          (agency + non-agency + insurers → GF_DATA)
 ├── filtering     (GF.filter)
@@ -53,38 +72,63 @@ core.js
       └── each design owns only its shell HTML, CSS, and card markup
 ```
 
-Designs are presenters. Shared behaviour lives once in `core.js` and is exposed
-as `window.GF`. Do not re-implement phone, maps, filter or copy logic inside a
-design file.
+Designs are presenters. Shared behaviour lives once in `core-v4.js` and is
+exposed as `window.GF`. Do not re-implement phone, maps, filter or copy logic
+inside a design file.
+
+Advisor Desk and Claim.Wire are simpler and self-contained: each is one HTML
+file, one CSS file and one JS file, with no shared engine between them beyond
+`data/data-insurers.js`, which Claim.Wire reads for its insurer list (see
+"One insurer list, two consumers" below).
 
 
 ## What each file is
 
 | File | What it is | Edit it? |
 |---|---|---|
-| `index.html` | The page itself — loads everything below | Rarely |
+| `index.html` | Advisor Desk (site home page) — loads `css/advisor-desk.css` + `advisor-desk.js` | Occasionally |
+| `garage-finder.html` | Garage Finder's loader shell — loads everything below it | Rarely |
+| `claimwire.html` | Claim.Wire — loads `css/claimwire.css`, `data/data-insurers.js`, `data/data-claimwire-playbooks.js`, `claimwire.js` | Occasionally |
 | `data/data-agency.js` | Agency (dealer) workshops | **Yes — often** |
 | `data/data-nonagency.js` | Non-agency workshops + their insurer panels | **Yes — often** |
-| `data/data-insurers.js` | Master list of insurers | Occasionally |
-| `core.js` | Shared engine: builds the list, runs the design picker, sends submissions | Rarely |
-| `shared.css` | The design picker and the add-workshop form | Rarely |
-| `design-1-board.css` / `.js` … `design-9-neu.css` / `.js` | The six designs — one pair of files each | When changing a look |
-| `submit.php` | Receives visitor submissions | **Set your key once** |
-| `admin.html` / `admin.js` / `admin.css` | Your private review page | No |
+| `data/data-insurers.js` | Master list of insurers — set `claimwireId` on an entry to give it a Claim.Wire playbook | Occasionally |
+| `data/data-claimwire-playbooks.js` | Claim.Wire's per-insurer contacts, SLAs, portal links, directories, keyed by `claimwireId` | **Yes — often** |
+| `core-v4.js` | Garage Finder's shared engine: builds the list, runs the design picker, sends submissions | Rarely |
+| `security-v4.js` | Garage Finder's HTML-escaping helper, shared with the admin page | Rarely |
+| `shared.css` | Garage Finder's design picker and the add-workshop form | Rarely |
+| `design-1-board.css` / `.js` … `design-9-neu.css` / `.js` | Garage Finder's six designs — one pair of files each | When changing a look |
+| `submit.php` | Receives Garage Finder visitor submissions | **Set your key once** |
+| `admin.html` / `admin.js` / `admin.css` | Garage Finder's private review page | No |
 | `FILE-1-goes-in-DATA-folder.txt` | Rename to `.htaccess`, put inside `data/` | Once |
-| `FILE-2-goes-in-HTDOCS-folder.txt` | Rename to `.htaccess`, put next to `index.html` | Once |
+| `FILE-2-goes-in-HTDOCS-folder.txt` | Rename to `.htaccess`, put next to `garage-finder.html` | Once |
 | `LOGO-FILENAMES*.txt` | Reference lists for logo filenames | No |
+
+## One insurer list, two consumers
+
+`data/data-insurers.js` is the single canonical insurer list. Garage Finder
+uses every entry's `name` to filter workshops by panel. Claim.Wire only
+shows insurers that have a `claimwireId` field set — that id is also the key
+into `SEED_PLAYBOOKS` in `data/data-claimwire-playbooks.js`, where the actual
+claims contacts/SLAs/directory live.
+
+**To give an insurer a Claim.Wire playbook:** add `claimwireId: "some-id"` to
+its entry in `data-insurers.js`, then add a matching `"some-id": { ... }`
+entry to `SEED_PLAYBOOKS` in `data-claimwire-playbooks.js`. Treat an existing
+`claimwireId` as a stable identifier once set — renaming it breaks the
+matching playbook entry and anyone's locally-saved edits to that insurer
+(Claim.Wire's per-insurer overrides live in each visitor's own browser
+storage, keyed by this id).
 
 ## Setup — do this once
 
 1. Open `submit.php` and change `ADMIN_KEY` at the top to something only you
    know. That is the password for the review page.
-2. Create a folder called `data` next to `index.html`, writable by the web
-   server (`chmod 755`, or `775`/`777` on stricter hosts). `submit.php`
+2. Create a folder called `data` next to `garage-finder.html`, writable by
+   the web server (`chmod 755`, or `775`/`777` on stricter hosts). `submit.php`
    creates it automatically if it is allowed to.
 3. Rename `FILE-1-goes-in-DATA-folder.txt` to `.htaccess` and put it inside
    `data/`. Rename `FILE-2-goes-in-HTDOCS-folder.txt` to `.htaccess` and put
-   it next to `index.html`.
+   it next to `garage-finder.html`.
 4. Open `admin.html`, enter your key, and confirm it loads.
 
 **No PHP on your host?** The site detects this automatically — see
@@ -135,7 +179,7 @@ so editing one cannot break another.
 
 ### Choosing the design visitors see first
 
-Open `core.js` and change:
+Open `core-v4.js` and change:
 
 ```js
 var DEFAULT_DESIGN = 'board';
@@ -143,7 +187,7 @@ var DEFAULT_DESIGN = 'board';
 
 ### Locking the site to one design
 
-In `core.js`:
+In `core-v4.js`:
 
 ```js
 var SHOW_PICKER = false;
@@ -154,7 +198,7 @@ The picker disappears and everyone sees `DEFAULT_DESIGN`.
 ### Removing a design entirely
 
 Delete its two files, then remove its `<script>` line from `index.html` and
-its id from the `ORDER` list near the top of `core.js`.
+its id from the `ORDER` list near the top of `core-v4.js`.
 
 ## Design entrance animations
 
