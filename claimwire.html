@@ -6,26 +6,19 @@
 <meta name="description" content="Claim.Wire — per-insurer claim registration steps, contacts, and a Gmail-linked claim email.">
 <link rel="icon" href="logo.svg?v=1">
 <title>Claim Wire</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700;800&family=Public+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-
+<script>try{var t=localStorage.getItem('claims-suite-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+<link rel="stylesheet" href="css/theme-adminator.css">
 <link rel="stylesheet" href="css/claimwire.css">
 </head>
-<body>
-
-<div class="masthead">
-  <div class="masthead-in">
-    <h1 class="wordmark">Claim<em>.</em>Wire</h1>
-    <div class="masthead-right">
-      <a class="home-link" href="index.html">&larr; Advisor Desk</a>
-      <a class="home-link" href="garage-finder.html">Garage Finder &rarr;</a>
-      <span class="masthead-note">Dubai &middot; Motor Claims</span>
-    </div>
-  </div>
-</div>
+<body data-active="claimwire" data-crumbs="Claims Suite | Claim.Wire">
 
 <div class="shell">
+<div data-shell-sidebar></div>
+<div class="main">
+<div data-shell-topbar></div>
+<main class="content">
+
+<div class="wire-shell">
 
   <nav class="trail" id="trail">
     <span class="crumb" data-goto="1">1&nbsp;Insurer</span>
@@ -329,6 +322,11 @@
 
 </div>
 
+</main>
+</div>
+</div>
+
+<script src="js/shell.js"></script>
 <script src="data/data-insurers.js"></script>
 <script src="data/data-claimwire-playbooks.js"></script>
 <script src="claimwire.js"></script>

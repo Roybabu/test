@@ -6,37 +6,21 @@
 <meta name="description" content="Advisor Desk — scripts, docs, authority limits, escalation paths, and links to Garage Finder and Claim.Wire.">
 <link rel="icon" href="logo.svg?v=1">
 <title>Advisor Desk</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700;800&family=Public+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-
+<script>try{var t=localStorage.getItem('claims-suite-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+<link rel="stylesheet" href="css/theme-adminator.css">
 <link rel="stylesheet" href="css/advisor-desk.css">
 </head>
-<body>
+<body data-active="advisor-desk" data-crumbs="Claims Suite | Advisor Desk">
 
-<header class="site">
-  <div class="wrap topline">
+<div class="shell">
+<div data-shell-sidebar></div>
+<div class="main">
+<div data-shell-topbar></div>
+<main class="content">
+  <div class="wrap topline" style="margin-bottom:18px;">
     <span class="status-dot">All systems normal</span>
     <span id="clock">—</span>
   </div>
-  <div class="wrap nav">
-    <div class="brand">Advisor<span>Desk</span></div>
-    <div class="search-box">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
-      <input id="indexSearch" type="text" placeholder="Search scripts, docs, escalation paths…" aria-label="Search advisor index">
-      <span class="kbd">/</span>
-    </div>
-    <nav class="links">
-      <a href="#index">Index</a>
-      <a href="#tools">Tools</a>
-      <a href="#reference">Reference</a>
-      <a href="#escalation">Escalation</a>
-      <a href="#updates">Ops notes</a>
-    </nav>
-  </div>
-</header>
-
-<main>
   <section class="shiftboard">
     <div class="wrap">
       <div class="board-grid">
@@ -58,6 +42,11 @@
           <p>Scripts, document checklists, authority limits and escalation paths — filed by what you reach for while a client is on the line.</p>
         </div>
         <span class="count-pill" id="resultCount">18 entries</span>
+      </div>
+      <div class="search-box">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input id="indexSearch" type="text" placeholder="Search scripts, docs, escalation paths…" aria-label="Search advisor index">
+        <span class="kbd">/</span>
       </div>
       <div class="idx-filters" id="idxFilters">
         <button class="chip active" data-filter="all">All</button>
@@ -197,7 +186,10 @@
     <span>Shift handover logs to #floor-notes at 18:00</span>
   </div>
 </footer>
+</div>
+</div>
 
+<script src="js/shell.js"></script>
 <script src="advisor-desk.js"></script>
 </body>
 </html>
