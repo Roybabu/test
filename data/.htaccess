@@ -1,0 +1,12 @@
+# Block direct web access to server-side-only data files.
+# data-insurers.js, data-claimwire-playbooks.js, and published-workshops.json
+# stay public — they're fetched directly by the browser (see DEPLOYMENT.md).
+<FilesMatch "^(admin-audit-log\.json|pending-submissions\.json|workshop-verification\.json|data-agency\.js|data-nonagency\.js)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
