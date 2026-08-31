@@ -6,7 +6,7 @@
 declare(strict_types=1);
 
 // ---- CONFIG ---------------------------------------------------------------
-const ADMIN_KEY   = 'CHANGE-ME-BEFORE-UPLOADING';
+const ADMIN_KEY   = '12345678';
 const STORE_DIR   = __DIR__ . '/data';
 const STORE_FILE  = STORE_DIR . '/pending-submissions.json';
 const VERIFICATION_FILE = STORE_DIR . '/workshop-verification.json';
